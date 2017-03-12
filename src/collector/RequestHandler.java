@@ -2,8 +2,7 @@ package collector;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
-//Classe responsavel pelas requisicoes
+ 
 public class RequestHandler {
 	static RequestHandler instance;
 	
@@ -24,4 +23,3 @@ public class RequestHandler {
 	
 	
 }
-/
