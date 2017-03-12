@@ -46,13 +46,16 @@ public class DNSResolver{
 			Document doc = Jsoup.connect("http://"+address.getHostAddress()+"/robots.txt")
 					.userAgent("GunMar-DNSResolver")
 					.get();
-			String[] lines = doc.body().text().split(" ");
-			for(String line : lines)
-				System.out.println(line);
+			parseRobotsBody(doc.body().text());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
+	}
+
+	private void parseRobotsBody(String text) {
+	
+		
 	}
 	 
 
