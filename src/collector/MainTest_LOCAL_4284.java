@@ -24,13 +24,12 @@ public class MainTest {
 	        
 	        Elements links = doc.select("a[href]");
 
-
-	       // print("\nLinks: (%d)", links.size());
-	      //  for (Element link : links) {
+	        print("\nLinks: (%d)", links.size());
+	        for (Element link : links) {
 	        
-	        //    print("%s", link.attr("abs:href"));
+	            print("%s", link.attr("abs:href"));
 
-	       // }
+	        }
 	    }
 
 	    private static void print(String msg, Object... args) {

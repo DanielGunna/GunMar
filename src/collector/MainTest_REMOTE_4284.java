@@ -19,11 +19,9 @@ public class MainTest {
 	        //Validate.isTrue(args.length == 1, "usage: supply url to fetch");
 	        String url = "http://216.58.202.228";
 	        print("Fetching %s...", url);
-	        DnsResolver.getInstance().resolveAddress(URI.create("www.google.com"));
-	        Document doc = Jsoup.parse(new URL(url).openStream(), "UTF-8", url);
-	        
-	        Elements links = doc.select("a[href]");
-
+	        DnsResolver.getInstance().resolveAddress(URI.create("www.facebook.com"));
+	       // Document doc = Jsoup.parse(new URL(url).openStream(), "UTF-8", url);
+	       // Elements links = doc.select("a[href]");
 
 	       // print("\nLinks: (%d)", links.size());
 	      //  for (Element link : links) {

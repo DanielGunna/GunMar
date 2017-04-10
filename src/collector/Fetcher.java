@@ -8,14 +8,14 @@ import org.jsoup.nodes.Document;
 
 public class Fetcher {
 	
-	private URL url;
+	private String url;
 	
-	public Fetcher(URL url) {
+	public Fetcher(String url) {
 		this.url = url;
 	}
 	
-	public Document fetchDocument() throws IOException {
-		 return Jsoup.parse(url.openStream(), "UTF-8", url.toString());
+	public Document fetchDocument() throws Exception {
+		 return RequestHandler.getInstance().getDataFromUrl(url);
 	}
 
 }
