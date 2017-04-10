@@ -97,10 +97,10 @@ public class DnsResolver{
 		System.out.println(TAG+"Host Canonicalname:  "+ address.getCanonicalHostName());
 	}
 	
-	private ArrayList<String> getRobotsTxt(InetAddress address){
+	private ArrayList<String> getRobotsTxt(String address){
 		ArrayList<String> lines = new ArrayList<>();
 		try{
-			URL url = new URL("http://"+address.getHostAddress()+"/robots.txt");
+			URL url = new URL("http://"+address+"/robots.txt");
 			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 			String line = null;
 	        while((line = in.readLine()) != null) {
@@ -113,7 +113,7 @@ public class DnsResolver{
 	}
 	
 	private List<String> getParsedRootRobots(InetAddress address){
-		return parseRobotsContent(getRobotsTxt(address));		
+		return parseRobotsContent(getRobotsTxt(address.getHostAddress()));		
 	}
 
 	private List<String> parseRobotsContent(ArrayList<String> text) {
