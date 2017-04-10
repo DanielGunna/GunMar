@@ -1,12 +1,16 @@
+
 package collector;
 
 import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
+
 
 import sun.net.spi.nameservice.dns.*;
 import java.rmi.UnknownHostException;
@@ -16,6 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DnsResolver {
+	
+	public interface OnAddressResolved{
+		void onResolve(String address);
+		void onError(Exception ex);
+	}
 
 	private static final String TAG = "DNSResolver: ";
 	private static final int MAX_CACHED_ADDRESS = 5000;
@@ -25,6 +34,7 @@ public class DnsResolver {
 	private HashMap<String, InetAddress> addressTable;
 	private HashMap<String, CacheMetadata> addressCache;
 	private int totalCachedAddress = 0;
+	private static final String ROBOTS_DIRECTORY = "robots/";
 
 	private DnsResolver() {
 		addressTable = new HashMap<>();
@@ -34,7 +44,9 @@ public class DnsResolver {
 	private void indexAddress(InetAddress address, URI hostName) {
 		addressTable.put(hostName.toString(), address);
 		logAddressInfo(address);
-		cacheAddress(new CacheMetadata(address, hostName, getParsedRootRobots(address)));
+		ArrayList <InetAddress> addresses = new ArrayList<>();
+		addresses.add(address);
+		cacheAddress(new CacheMetadata(addresses, hostName, getParsedRootRobots(address)));
 	}
 
 	private void cacheAddress(CacheMetadata data) {
@@ -46,6 +58,7 @@ public class DnsResolver {
 	}
 
 	private void cacheOnDisk(CacheMetadata data) {
+		
 	}
 
 	private void cacheOnMemory(CacheMetadata data) {
@@ -90,33 +103,66 @@ public class DnsResolver {
 	private void logAddressInfo(InetAddress address) {
 		System.out.println(TAG + "Host IP Address: " + address.getHostAddress());
 		System.out.println(TAG + "Host Name:  " + address.getHostName());
-		System.out.println(TAG + "Host Canonicalname:  " + address.getCanonicalHostName());
+		//System.out.println(TAG + "Host Canonicalname:  " + address.getCanonicalHostName());
+	}
+
+	
+	private InputStreamReader getUrlStream(String address) throws Exception{
+		URL url = new URL("https://" + address + "/robots.txt");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setUseCaches(true);
+		conn.setReadTimeout(0);
+		conn.setConnectTimeout(0);
+		return verifyRedirects(conn);
+	}
+	private InputStreamReader verifyRedirects(HttpURLConnection conn) throws Exception {
+		int status = conn.getResponseCode();
+		InputStreamReader in =  null;
+		if (status != HttpURLConnection.HTTP_OK) {
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM|| status == HttpURLConnection.HTTP_SEE_OTHER){
+				getUrlStream(conn.getHeaderField("Location"));
+			}	 
+		}else{
+			in = new InputStreamReader(conn.getInputStream());
+		}
+		return in;
 	}
 
 	private ArrayList<String> getRobotsTxt(String address) {
 		ArrayList<String> lines = new ArrayList<>();
+		File robot = new File(ROBOTS_DIRECTORY+"robots_"+address+".txt");
 		try {
-			URL url = new URL("http://" + address + "/robots.txt");
-			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+			BufferedReader in = new BufferedReader(getUrlStream(address));	
+			FileOutputStream outputStream = new FileOutputStream(robot);
 			String line = null;
 			while ((line = in.readLine()) != null) {
 				lines.add(line);
+				line+="\n";
+				outputStream.write(line.getBytes());
 			}
-		} catch (IOException e) {
+			in.close();
+			outputStream.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return lines;
 	}
 
 	private List<String> getParsedRootRobots(InetAddress address) {
-		return parseRobotsContent(getRobotsTxt(address.getHostAddress()));
+		return parseRobotsContent(getRobotsTxt(address.getHostName()));
 	}
 
 	private List<String> parseRobotsContent(ArrayList<String> text) {
 		ArrayList<String> disallowed = new ArrayList<>();
+		String[] rule = null;
 		for (String line : text) {
 			if (line.contains("Disallow")) {
-				disallowed.add(line.split(":")[1].trim());
+				line.trim();
+				rule = line.split(":");
+				if(rule.length>1){
+					if(!disallowed.contains(rule[1].trim()))
+					disallowed.add(rule[1].trim());
+				}
 			}
 		}
 		System.out.print(disallowed.toString());
@@ -124,18 +170,40 @@ public class DnsResolver {
 	}
 
 	private class CacheMetadata implements Serializable {
-		private InetAddress address;
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8219934947788596754L;
+		private List<InetAddress> addresses;
 		private URI url;
 		private List<String> disalowedAddresses;
 		private int timesUsed;
 		private long lastUse;
 
-		public InetAddress getAddress() {
-			return address;
+ 
+
+		public List<InetAddress> getAddress() {
+			return addresses;
 		}
 
-		public void setAddress(InetAddress address) {
-			this.address = address;
+		public void setAddress(List<InetAddress> address) {
+			this.addresses = address;
+		}
+
+		public int getTimesUsed() {
+			return timesUsed;
+		}
+
+		public void setTimesUsed(int timesUsed) {
+			this.timesUsed = timesUsed;
+		}
+
+		public long getLastUse() {
+			return lastUse;
+		}
+
+		public void setLastUse(long lastUse) {
+			this.lastUse = lastUse;
 		}
 
 		public URI getUrl() {
@@ -156,15 +224,17 @@ public class DnsResolver {
 
 		@Override
 		public String toString() {
-			return "Metadata [address=" + address + ", url=" + url + ", disalowedAddresses="
+			return "Metadata [address=" + addresses + ", url=" + url + ", disalowedAddresses="
 					+ disalowedAddresses.toString() + "]";
 		}
 
-		public CacheMetadata(InetAddress address, URI url, List<String> disalowedAddresses) {
-			this.address = address;
+		public CacheMetadata(List<InetAddress> address, URI url, List<String> disalowedAddresses) {
+			this.addresses = address;
 			this.url = url;
 			this.disalowedAddresses = disalowedAddresses;
 		}
 
 	}
 }
+
+
