@@ -21,6 +21,7 @@ public class MainTest {
 	        print("Fetching %s...", url);
 	        DnsResolver.getInstance().resolveAddress(URI.create("www.google.com"));
 	        Document doc = Jsoup.parse(new URL(url).openStream(), "UTF-8", url);
+	        
 	        Elements links = doc.select("a[href]");
 
 	        print("\nLinks: (%d)", links.size());
