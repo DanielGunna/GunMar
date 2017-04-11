@@ -12,7 +12,7 @@ public class URL {
 	}
 	
 	private void format() {
-		url.replaceAll("https", "http");
+		url = url.replace("https", "http");
 		if (url.contains("http://") == false) {
 			url = "http://"+url;
 		}

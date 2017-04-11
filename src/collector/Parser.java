@@ -1,6 +1,7 @@
 package collector;
 
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import utils.ParsedData;
@@ -18,9 +19,15 @@ public class Parser {
 	}
 	
 	public ParsedData parseDocument() {
-		Elements links = doc.select("a[href]");
+		Elements linksElem = doc.select("a[href]");
+	
 		String fullText = doc.body().text().replaceAll("\\s+", " ");
 		String[] words = fullText.split(" ");
+		String[] links = new String[linksElem.size()];
+		int i = 0;
+		for (Element link : linksElem) {
+			links[i++] = link.absUrl("href");
+		}
 		
 		return new ParsedData(links, words);
 		

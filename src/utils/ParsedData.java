@@ -4,18 +4,18 @@ import org.jsoup.select.Elements;
 
 public class ParsedData {
 	
-	private Elements links;
+	private String[] links;
 	private String[] words;
 	
-	public ParsedData(Elements links, String[] words) {
+	public ParsedData(String[] links, String[] words) {
 		this.links = links;
 		this.words = words;
 	}
 	
-	public Elements getLinks() {
+	public String[] getLinks() {
 		return links;
 	}
-	public void setLinks(Elements links) {
+	public void setLinks(String[] links) {
 		this.links = links;
 	}
 	public String[] getWords() {
