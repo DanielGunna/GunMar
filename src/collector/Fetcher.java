@@ -1,14 +1,20 @@
 package collector;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-public class Fetcher {
+import utils.FileUtils;
+import utils.ParsedData;
+
+public class Fetcher implements Runnable {
 	
 	private String url;
+	Parser parser;
+	ParsedData pd;
 	
 	public Fetcher(String url) {
 		this.url = url;
@@ -17,5 +23,25 @@ public class Fetcher {
 	public Document fetchDocument() throws Exception {
 		 return RequestHandler.getInstance().getDataFromUrl(url);
 	}
+	
+	private void sendDocumentToParser(Document doc) {
+		parser = new Parser();
+		parser.setDoc(doc);
+		pd = parser.parseDocument();
+
+		FileUtils.openWrite("docs/"+url.replace("/", "")+".txt");
+		FileUtils.println(pd.getLinks());
+		FileUtils.close();
+	}
+	
+	@Override
+    public void run() { 
+        try {
+			sendDocumentToParser(fetchDocument());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 
 }
