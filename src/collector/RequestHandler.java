@@ -6,7 +6,9 @@ import org.jsoup.nodes.Document;
 public class RequestHandler {
 	static RequestHandler instance;
 	
-	
+	private RequestHandler() {
+		
+	}
 	
 	public static RequestHandler getInstance(){
 		if(instance == null ){
