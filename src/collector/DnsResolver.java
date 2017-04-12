@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
@@ -72,12 +73,14 @@ public class DnsResolver {
 		return instance;
 	}
 
-	public void resolveAddress(URI hostName) {
+	public String resolveAddress(URI hostName) {
+		String addr = "";
 		if (isCached(hostName)) {
-			resolveWithCache(hostName);
+			addr = resolveWithCache(hostName);
 		} else {
-			resolveWithDns(hostName);
+			addr = resolveWithDns(hostName);
 		}
+		return addr;
 
 	}
 
@@ -85,19 +88,22 @@ public class DnsResolver {
 		return false;
 	}
 
-	private void resolveWithCache(URI hostName) {
+	private String resolveWithCache(URI hostName) {
+		return "";
 	}
 
-	private void resolveWithDns(URI hostName) {
+	private String resolveWithDns(URI hostName) {
 		try {
 			DNSNameService service = new DNSNameService();
-			InetAddress[] ipAddress = service.lookupAllHostAddr(hostName.toString());
-			indexAddress(ipAddress[1], hostName);
+			InetAddress ipAddress = Inet4Address.getByName(hostName.getHost().toString());//service.lookupAllHostAddr(hostName.toString());
+			indexAddress(ipAddress, hostName);
+			return ipAddress.getHostAddress();
 		} catch (UnknownHostException e) {
 			System.out.println(TAG + "Invalid HostName");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return "";
 	}
 
 	private void logAddressInfo(InetAddress address) {
@@ -108,8 +114,8 @@ public class DnsResolver {
 
 	
 	private InputStreamReader getUrlStream(String address) throws Exception{
-		URL url = new URL("https://" + address + "/robots.txt");
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		URL url = new URL("http://" + address + "/robots.txt");
+		HttpURLConnection conn =(HttpURLConnection) url.openConnection();
 		conn.setUseCaches(true);
 		conn.setReadTimeout(0);
 		conn.setConnectTimeout(0);

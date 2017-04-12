@@ -2,6 +2,7 @@ package collector;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 
 import org.jsoup.Jsoup;
@@ -21,7 +22,8 @@ public class Fetcher implements Runnable {
 	}
 	
 	public Document fetchDocument() throws Exception {
-		 return RequestHandler.getInstance().getDataFromUrl(url);
+		 String addr  = DnsResolver.getInstance().resolveAddress(URI.create(url));
+		 return RequestHandler.getInstance().getDataFromUrl(addr);
 	}
 	
 	private void sendDocumentToParser(Document doc) {

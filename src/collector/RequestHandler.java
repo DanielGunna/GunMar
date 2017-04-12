@@ -18,7 +18,7 @@ public class RequestHandler {
 	}
 	
 	public Document getDataFromUrl(String url )throws Exception{
-		Document document =  Jsoup.connect(url).get();
+		Document document =  Jsoup.connect(new URL(url).toString()).get();
 		return document;
 	}
 	
