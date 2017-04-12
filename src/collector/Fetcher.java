@@ -16,6 +16,9 @@ public class Fetcher implements Runnable {
 	private String url;
 	Parser parser;
 	ParsedData pd;
+	
+	private long startTime = 0;
+	private long stopTime = 0;
 
 	public Fetcher(String url) {
 		this.url = url;
@@ -36,7 +39,9 @@ private void sendDocumentToParser(Document doc) {
 	parser = new Parser();
 	parser.setDoc(doc);
 	pd = parser.parseDocument();
-
+	long stopTime = System.currentTimeMillis();
+    long elapsedTime = stopTime - startTime;
+    System.out.println("COLETA: "+url+" -> "+elapsedTime);
 	FileUtils.openWrite("docs/" + url.replace("/", "") + ".txt");
 	FileUtils.println(pd.getLinks());
 	FileUtils.close();
@@ -45,6 +50,7 @@ private void sendDocumentToParser(Document doc) {
 @Override
 public void run() {
 	try {
+		startTime = System.currentTimeMillis();
 		sendDocumentToParser(fetchDocument());
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
