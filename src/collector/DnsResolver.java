@@ -137,8 +137,8 @@ public class DnsResolver {
 	}
 
 	private void logAddressInfo(InetAddress address) {
-		System.out.println(TAG + "Host IP Address: " + address.getHostAddress());
-		System.out.println(TAG + "Host Name:  " + address.getHostName());
+//		System.out.println(TAG + "Host IP Address: " + address.getHostAddress());
+//		System.out.println(TAG + "Host Name:  " + address.getHostName());
 		//System.out.println(TAG + "Host Canonicalname:  " + address.getCanonicalHostName());
 	}
 
@@ -201,7 +201,7 @@ public class DnsResolver {
 				}
 			}
 		}
-		System.out.println(disallowed.toString());
+		//System.out.println(disallowed.toString());
 		return disallowed;
 	}
 	

@@ -45,6 +45,12 @@ private void sendDocumentToParser(Document doc) {
 	stopTime = System.currentTimeMillis();
     long elapsedTime = stopTime - startTime;
     System.out.println("COLETA: "+url+" -> "+elapsedTime);
+    
+    for (String s : pd.getLinks()) {
+    	MainTest.urlList.add(new collector.URL(s));
+    }
+    
+    
 	FileUtils.openWrite("docs/" + url.replace("/", "") + ".txt");
 	FileUtils.println(pd.getLinks());
 	FileUtils.close();
