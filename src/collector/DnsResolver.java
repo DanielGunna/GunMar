@@ -58,7 +58,9 @@ public class DnsResolver {
 		if (totalCachedAddress <= MAX_CACHED_ADDRESS) {
 			cacheOnMemory(data);
 		} else {
-			cacheOnDisk(data);
+			clearMemoryCache();
+			cacheOnMemory(data);
+			//cacheOnDisk(data);
 		}
 	}
 
@@ -95,6 +97,13 @@ public class DnsResolver {
 			}
 		}
 		return true;
+	}
+	
+
+
+	private void clearMemoryCache() {
+		addressCache.clear();
+		addressTable.clear();
 	}
 
 	private List<String> getRobotRulesByUrl(URI url) {
@@ -195,6 +204,8 @@ public class DnsResolver {
 		System.out.println(disallowed.toString());
 		return disallowed;
 	}
+	
+	
 
 	private class CacheMetadata implements Serializable {
 		/**
