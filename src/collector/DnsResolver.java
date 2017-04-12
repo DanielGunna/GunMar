@@ -49,6 +49,10 @@ public class DnsResolver {
 		addresses.add(address);
 		cacheAddress(new CacheMetadata(addresses, hostName, getParsedRootRobots(address)));
 	}
+	
+	private boolean isCahedOnMemory(URI url){
+		return addressCache.containsKey(url.getHost());
+	}
 
 	private void cacheAddress(CacheMetadata data) {
 		if (totalCachedAddress <= MAX_CACHED_ADDRESS) {
@@ -81,7 +85,24 @@ public class DnsResolver {
 			addr = resolveWithDns(hostName);
 		}
 		return addr;
+	}
+	
+	
+	public boolean canDownloadData(URI url){
+		for(String path : getRobotRulesByUrl(url)){
+			if(url.toString().contains(path)){
+				return false;
+			}
+		}
+		return true;
+	}
 
+	private List<String> getRobotRulesByUrl(URI url) {
+		List<String> rules = new ArrayList<>();
+		if(isCahedOnMemory(url)){
+			rules   = addressCache.get(url.getHost()).getDisalowedAddresses();			
+		}
+		return rules;
 	}
 
 	private boolean isCached(URI hostName) {
@@ -149,7 +170,7 @@ public class DnsResolver {
 			in.close();
 			outputStream.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return lines;
 	}
