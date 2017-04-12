@@ -30,7 +30,6 @@ public class MainTest {
 		while(!urlList.isEmpty()) {
 			
 			URL url = (URL) urlList.remove(0);
-			System.out.println(url.toString());
 			Fetcher worker = new Fetcher(url.toString());
 			executor.execute(worker);
 		

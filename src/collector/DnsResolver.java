@@ -192,7 +192,7 @@ public class DnsResolver {
 				}
 			}
 		}
-		System.out.print(disallowed.toString());
+		System.out.println(disallowed.toString());
 		return disallowed;
 	}
 
