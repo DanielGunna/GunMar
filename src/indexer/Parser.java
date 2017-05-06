@@ -42,12 +42,21 @@ public class Parser {
 		fileString.replace("ê","e");
 		fileString.replace("â","a");
 		fileString.replace("-","");
+		fileString.replace("!","");
+		fileString.replace(".","");
+		fileString.replace("ç","c");
+		fileString.replace("?","");
 		fileString.replace("ã","a");
 		fileString.replace("õ","o");
 		fileString.replace("é","e");
 		fileString.replace("í","i");
 		fileString.replace("ó","o");
 		fileString.replace("ú","u");
+		fileString.replace("ü","u");
+		fileString.replace("(","");
+		fileString.replace(")","");
+		fileString.replace("{","");
+		fileString.replace("}","");
 		
 		return fileString;
 	}
