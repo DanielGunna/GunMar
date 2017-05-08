@@ -23,7 +23,7 @@ public class MainTest {
 	private static final int MAX_NUM_THREADS = 16;
 	public static java.util.List<URL> urlList = Collections.synchronizedList(new ArrayList<URL>());
 	
-	public static void main(String[] args) {
+	public static void mainCollector(String[] args) {
 		
 		initUrlListWithSeed();
 		ExecutorService executor = Executors.newFixedThreadPool(MAX_NUM_THREADS);

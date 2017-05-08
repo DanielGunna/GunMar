@@ -12,20 +12,22 @@ public class FileUtils
    private static Formatter saida = null;
    private static Scanner entrada = null;
    
-   public static String getCanonicalPath(String nomeArq) throws Exception{
-         return (new File(nomeArq)).getCanonicalPath().replace('\\','/');
+   public static File getCanonicalPath(String nomeArq) throws Exception{
+         return (new File(nomeArq));
    }
 
-	public static void openWrite(String nomeArq) {
+	public static File openWrite(String nomeArq) {
       close();
-
+      	File file = null;
 		try{
-         nomeArq = getCanonicalPath(nomeArq);
+			 file = getCanonicalPath(nomeArq);
+			 nomeArq = file.getCanonicalPath().replace('\\','/');;
 		   saida = new Formatter(nomeArq);
          write = true;
 		}  catch (Exception e) {
 			e.printStackTrace();
 		}
+		return file;
    }
 
 	public static void openRead(String nomeArq) {

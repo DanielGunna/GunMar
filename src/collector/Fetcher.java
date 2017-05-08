@@ -8,6 +8,8 @@ import java.net.URL;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import main.Machine;
+import main.Machine.DocumentData;
 import utils.FileUtils;
 import utils.ParsedData;
 
@@ -49,11 +51,12 @@ private void sendDocumentToParser(Document doc) {
     for (String s : pd.getLinks()) {
     	MainTest.urlList.add(new collector.URL(s));
     }
+ 
     
-    
-	FileUtils.openWrite("docs/" + url.replace("/", "") + ".txt");
+	File file = FileUtils.openWrite("docs/" + url.replace("/", "") + ".txt");
 	FileUtils.println(pd.getLinks());
 	FileUtils.close();
+	Machine.addFile(file,url);
 }
 
 @Override

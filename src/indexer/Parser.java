@@ -32,8 +32,6 @@ public class Parser {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-	
 	}
 
 	private String getParsedFile(String fileString) {
@@ -57,7 +55,6 @@ public class Parser {
 		fileString.replace(")","");
 		fileString.replace("{","");
 		fileString.replace("}","");
-		
 		return fileString;
 	}
 
