@@ -1,0 +1,1 @@
+[Fatal, error:, Call, to, undefined, method, JDocumentRaw::addFavicon(), in, /home/filmmake/public_html/templates/shaper_helix3/error.php, on, line, 17]

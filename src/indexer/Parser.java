@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 
+import utils.StopWords;
+
 public class Parser {
 	
 	
@@ -35,6 +37,7 @@ public class Parser {
 	}
 
 	private String getParsedFile(String fileString) {
+		removeStopWords(fileString);
 		fileString.replace("á","a");
 		fileString.replace("à","a");
 		fileString.replace("ê","e");
@@ -56,6 +59,27 @@ public class Parser {
 		fileString.replace("{","");
 		fileString.replace("}","");
 		return fileString;
+	}
+	
+	
+	private String removeStopWords(String fileString) {
+		
+		for (String stopWord : StopWords.enStopWords) {
+			fileString.replace(fileString, stopWord);
+		}
+		
+
+		for (String stopWord : StopWords.esStopWords) {
+			fileString.replace(fileString, stopWord);
+		}
+		
+
+		for (String stopWord : StopWords.ptStopWords) {
+			fileString.replace(fileString, stopWord);
+		}
+		
+		return fileString;
+	
 	}
 
 }

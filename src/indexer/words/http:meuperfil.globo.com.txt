@@ -1,0 +1,1 @@
+[CENTRAL, DE, RELACIONAMENTO, {{, data.description, }}, {{, data.priceText, }}, {{, data.extraInfo, }}]
