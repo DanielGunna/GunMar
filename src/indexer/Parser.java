@@ -11,9 +11,8 @@ import java.io.RandomAccessFile;
 public class Parser {
 	
 	
-	
-	
-	public void parseDocument(File file){
+
+	public File parseDocument(File file){
 		FileReader reader;
 		FileWriter writer;
 		try {
@@ -32,6 +31,7 @@ public class Parser {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return file;
 	}
 
 	private String getParsedFile(String fileString) {
