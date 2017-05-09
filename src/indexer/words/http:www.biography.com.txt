@@ -1,1 +1,0 @@
-[People, Nostalgia, Celebrity, History, &, Culture, Crime, &, Scandal, Video, Join, Subscribe, to, Newsletter, About, People, Nostalgia, Celebrity, History, &, Culture, Crime, &, Scandal, Video, Join, {{link.name}}, ©, {{$root.currentTime|date:'yyyy'}}, {{$root.config.copyrightHolder}}, {{$root.config.analytics.providers.Comscore.badge}}]
