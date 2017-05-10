@@ -9,7 +9,41 @@ import main.Machine;
 
 public class MainIndexer {
 	
-	private static HashMap<String, List<File>> globalTokens;
+	private static HashMap<String, IndexEntry> globalTokens;
+	
+	
+	public static class IndexEntry{
+		private Integer ocurrency;
+		private List<File> files;
+		
+		
+		@Override
+		public String toString() {
+			return "{occurency:"+ocurrency
+					+ ","
+					+ "files:}"+ getFileNameList();
+		}
+		
+		private String getFileNameList() {
+			ArrayList<String> filesName = new ArrayList<>();
+			for(File file : files){
+				filesName.add(file.getName());
+			}	
+			return filesName.toString();
+		}
+
+		public List<File> getFiles(){
+			return files;
+		}
+		
+		public void incrementCont(Integer c){
+			ocurrency+=c;
+		}
+		public IndexEntry(Integer x , List<File> files){
+			this.files= files;
+			ocurrency = x ;
+		}
+	}
 	
 	public static void mainIndexer(){
 		globalTokens = new HashMap<>();
@@ -19,16 +53,18 @@ public class MainIndexer {
 				File  parsedfile  = parser.parseDocument(Machine.data.remove(0));
 				Tokenizer tokenizer = new Tokenizer();
 				List<String> documentTokens = tokenizer.getTokens(parsedfile);
+				HashMap<String, Integer> occur = tokenizer.getOcurrency();
 				for(String token :  documentTokens){
 					if(globalTokens.containsKey(token)){
-						globalTokens.get(token).add(parsedfile);
+						globalTokens.get(token).getFiles().add(parsedfile);
+						globalTokens.get(token).incrementCont(occur.get(token));
 					}else{
 						ArrayList<File> files = new ArrayList<>();
 						files.add(parsedfile);
-						globalTokens.put(token, files);
+						IndexEntry newEntry = new IndexEntry(occur.get(token), files);
+						globalTokens.put(token,newEntry);
 					}
 				}
-				
 			}
 		}
 	}

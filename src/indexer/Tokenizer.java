@@ -15,7 +15,10 @@ import java.util.Set;
 public class Tokenizer {
 	private HashMap<String, Integer> occurrence;
 	
+	
+	
 	public List<String> getTokens(File file){
+		occurrence = new HashMap<>();
 		FileReader reader;
 		Set<String> tokens = null;
 		try {
@@ -25,6 +28,7 @@ public class Tokenizer {
 			String fileString = "";
 			while((line = buff.readLine())!=null){
 				String[] lineTokens  =  line.split(",");
+				getOcurrency(lineTokens);
 				tokens.addAll(Arrays.asList(lineTokens));
 			}
 			reader.close();
@@ -35,6 +39,23 @@ public class Tokenizer {
 		return getList(tokens);
 	}
 
+	private void getOcurrency(String[] lineTokens) {
+		for(String s : lineTokens){
+			if(occurrence.containsKey(s)){
+				Integer occurence = occurrence.get(s);
+				occurrence.put(s,occurence++);
+			}else{
+				occurrence.put(s,1);
+			}
+		}
+		
+	}
+
+	public HashMap<String,Integer> getOcurrency(){
+		return occurrence;
+	}
+	
+	
 	private List<String> getList(Set<String> tokens) {
 		if(tokens == null || tokens.size() == 0){
 			return new ArrayList<>();

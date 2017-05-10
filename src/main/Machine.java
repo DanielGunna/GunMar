@@ -6,6 +6,7 @@ import java.util.List;
 
 import collector.MainTest;
 import indexer.Analyzer;
+import indexer.MainIndexer;
 
 
 public class Machine {
@@ -29,22 +30,22 @@ public class Machine {
 	
 	
 	public static void main(String[] args ) throws Exception{
-		Analyzer a = new Analyzer();
-		a.createFullInvertedIndex();
-//		Thread collectorthread = new Thread(()->{
-//			MainTest.mainCollector(args);
-//		});
-//		Thread indexerThread  = new Thread(()->{
-//			
-//		});
-//		collectorthread.start();
-//		indexerThread.start();
-//		try {
-//			indexerThread.wait(10000000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//	
+		//Analyzer a = new Analyzer();
+		//a.createFullInvertedIndex();
+		Thread collectorthread = new Thread(()->{
+			MainTest.mainCollector(args);
+		});
+		Thread indexerThread  = new Thread(()->{
+			MainIndexer.mainIndexer();
+		});
+		collectorthread.start();
+		indexerThread.start();
+		///try {
+			//indexerThread.wait(10000000);
+		//} catch (InterruptedException e) {
+		//	e.printStackTrace();
+		//}
+	
 		
 	}
 
