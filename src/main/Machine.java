@@ -9,29 +9,64 @@ import indexer.Analyzer;
 import indexer.MainIndexer;
 
 
-public class Machine {
+public  class Machine {
+	private  static Machine instance; 
+	
+	public Machine(){
+		instance = this;
+	}
+	
+	public static  Machine getInstace(){
+		return instance;
+	}
 	
 	public class DocumentData{
 		private String documentUrl;
 		private File documentFile;
-		public DocumentData(File b, String a){
-			documentUrl = a;
+		public String getDocumentUrl() {
+			return documentUrl;
+		}
+
+		public void setDocumentUrl(String documentUrl) {
+			this.documentUrl = documentUrl;
+		}
+
+
+		public File getDocumentFile() {
+			return documentFile;
+		}
+
+		public void setDocumentFile(File documentFile) {
+			this.documentFile = documentFile;
+		}
+
+		public File getUrlsFile() {
+			return urlsFile;
+		}
+
+		public void setUrlsFile(File urlsFile) {
+			this.urlsFile = urlsFile;
+		}
+
+		private File urlsFile;
+		
+		public DocumentData(File a,File b, String url){
+			urlsFile  = a;
+			documentUrl = url;
 			documentFile = b; 
 		}
 	}
 	
 	
-	public static void addFile(File file , String url){
+	public  void addFile(File links,File words, String url){
 		//DocumentData doc = new DocumentData(file, url);
-		data.add(file);
+		data.add(new DocumentData(links, words, url));
 	}
 	
-	public  static  List<File> data = Collections.synchronizedList(new ArrayList<File>());
+	public  static  List<DocumentData> data = Collections.synchronizedList(new ArrayList<DocumentData>());
 	
 	
-	public static void main(String[] args ) throws Exception{
-		//Analyzer a = new Analyzer();
-		//a.createFullInvertedIndex();
+	protected void mainMachine(String[] args){
 		Thread collectorthread = new Thread(()->{
 			MainTest.mainCollector(args);
 		});
@@ -40,6 +75,13 @@ public class Machine {
 		});
 		collectorthread.start();
 		indexerThread.start();
+	}
+	
+	
+	public static void main(String[] args ) throws Exception{
+		//Analyzer a = new Analyzer();
+		//a.createFullInvertedIndex();
+		new Machine().mainMachine(args);
 		///try {
 			//indexerThread.wait(10000000);
 		//} catch (InterruptedException e) {

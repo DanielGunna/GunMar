@@ -1,5 +1,8 @@
 package collector;
 
+import java.io.IOException;
+
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
  
@@ -17,9 +20,16 @@ public class RequestHandler {
 		return instance;
 	}
 	
-	public Document getDataFromUrl(String url )throws Exception{
+	public Document getDataFromUrl(String url ){
 		Document document = null;
-		document =  Jsoup.connect(new URL(url).toString()).get();
+		try{
+			String  urlToResolve = new String(new URL(url).toString().getBytes("UTF-8"));
+			document =  Jsoup.connect(urlToResolve).get();
+		}catch(HttpStatusException e){
+			System.out.println("Http Error:" + e.getStatusCode());
+		} catch (IOException e) {
+			System.out.println("IO Error:" + e.getLocalizedMessage());
+		}
 		return document;
 	}
 	

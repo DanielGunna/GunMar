@@ -1,0 +1,9 @@
+                                                                     
+                                                                     
+                                                                     
+                                             
+User-agent: *
+Disallow: /servico/
+
+User-agent: Googlebot-News
+Allow: *

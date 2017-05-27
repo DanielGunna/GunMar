@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /*
+
+User-agent: Googlebot
+# remover scrips css e afins
+Disallow: /*.swf$
+
+# qualquer endereco que contenha ?
+Disallow: /*?*
+
+# permitir o adsense em qualquer url
+User-agent: Mediapartners-Google*
+Disallow:
+Allow: /*
+
+#Sitemap
+Sitemap: http://revistaquem.globo.com/sitemap/quem-acontece/sitemapnews.xml
+    

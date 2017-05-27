@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import main.Machine;
+import main.Machine.DocumentData;
 
 public class MainIndexer {
 	
@@ -50,7 +51,8 @@ public class MainIndexer {
 		while(true){
 			if(Machine.data.size() >= 100 && Machine.data.size() <=1000 ){
 				Parser parser = new Parser();
-				File  parsedfile  = parser.parseDocument(Machine.data.remove(0));
+				DocumentData data = Machine.getInstace().data.remove(0);
+				File  parsedfile  = parser.parseDocument(data.getDocumentFile());
 				Tokenizer tokenizer = new Tokenizer();
 				List<String> documentTokens = tokenizer.getTokens(parsedfile);
 				HashMap<String, Integer> occur = tokenizer.getOcurrency();

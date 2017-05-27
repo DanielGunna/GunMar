@@ -13,7 +13,6 @@ import utils.StopWords;
 public class Parser {
 	
 	
-
 	public File parseDocument(File file){
 		FileReader reader;
 		FileWriter writer;

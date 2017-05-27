@@ -41,9 +41,13 @@ public class Fetcher implements Runnable {
     }
 
 private void sendDocumentToParser(Document doc) {
+	if(doc == null)
+		return;
 	parser = new Parser();
 	parser.setDoc(doc);
 	pd = parser.parseDocument();
+	if(pd == null)
+		return;
 	stopTime = System.currentTimeMillis();
     long elapsedTime = stopTime - startTime;
     System.out.println("COLETA: "+url+" -> "+elapsedTime);
@@ -51,12 +55,19 @@ private void sendDocumentToParser(Document doc) {
     for (String s : pd.getLinks()) {
     	MainTest.urlList.add(new collector.URL(s));
     }
- 
-    
-	File file = FileUtils.openWrite("docs/" + url.replace("/", "") + ".txt");
-	FileUtils.println(pd.getLinks());
+     
+	File fileLinks = FileUtils.openWrite("links/" + url.replace("/", "") + ".txt");
+	String[] links  = pd.getLinks();
+	if(links !=null)
+		FileUtils.println(links);
 	FileUtils.close();
-	Machine.addFile(file,url);
+	
+	File fileText = FileUtils.openWrite("docs/" + url.replace("/", "") + ".txt");
+	String[] text  = pd.getWords();
+	if(text !=null)
+		FileUtils.println(text);
+	FileUtils.close();
+	Machine.getInstace().addFile(fileLinks,fileText,url);
 }
 
 @Override

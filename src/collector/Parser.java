@@ -19,17 +19,20 @@ public class Parser {
 	}
 	
 	public ParsedData parseDocument() {
-		Elements linksElem = doc.select("a[href]");
-	
-		String fullText = doc.body().text().replaceAll("\\s+", " ");
-		String[] words = fullText.split(" ");
-		String[] links = new String[linksElem.size()];
-		int i = 0;
-		for (Element link : linksElem) {
-			links[i++] = link.absUrl("href");
+		if(doc !=null){
+			Elements linksElem = doc.select("a[href]");
+			
+			String fullText = doc.body().text().replaceAll("\\s+", " ");
+			String[] words = fullText.split(" ");
+			String[] links = new String[linksElem.size()];
+			int i = 0;
+			for (Element link : linksElem) {
+				links[i++] = link.absUrl("href");
+			}
+			return new ParsedData(links, words);
 		}
-		
-		return new ParsedData(links, words);
+			
+		return null;
 		
 	}
 	

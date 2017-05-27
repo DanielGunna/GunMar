@@ -1,0 +1,9 @@
+Sitemap: http://forum.techtudo.com.br/sitemap.xml
+
+User-Agent: *
+Disallow: /contas/
+Disallow: /usuarios/
+Disallow: /revisoes/
+Disallow: /buscar
+Disallow: /tags_relacionadas
+Disallow: /*ordenacao=

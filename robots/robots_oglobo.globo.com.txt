@@ -1,0 +1,42 @@
+User-agent: *
+Disallow: /_inc/
+Disallow: /_inc_novo/
+Disallow: /_img/
+Disallow: /skins/
+Disallow: /in/
+Disallow: /ece_incoming/
+Disallow: /inc/
+Disallow: /img/
+Disallow: /servicos/
+Disallow: /email_marketing/
+Disallow: /email_mkt/
+Disallow: /rss.xml
+Disallow: /*.json
+Disallow: */ALTERNATES/*
+Disallow: */BINARY/*
+Allow: /in/*.jpg
+Allow: /in/*.JPG
+Allow: /in/*.jpeg
+Allow: /in/*.JPEG
+Allow: /in/*.png
+Allow: /in/*.PNG
+Allow: /in/*.gif
+Allow: /in/*.GIF
+Allow: /in/*.tif
+Allow: /in/*.TIF
+Allow: /in/*.bmp
+Allow: /in/*.BMP
+
+User-agent: Googlebot-News
+Allow: *
+
+User-agent: Yandex
+Disallow: /
+
+User-agent: Slurp
+Disallow: /
+
+User-agent: Baidoospider
+Disallow: /
+
+Sitemap:  http://oglobo.globo.com/sitemap/index.xml

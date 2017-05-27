@@ -1,0 +1,6 @@
+Sitemap: http://globoplay.globo.com/sitemap-videos.xml
+
+User-Agent: *
+Disallow: /v/xhr/*
+Disallow: /-/*
+Allow: /

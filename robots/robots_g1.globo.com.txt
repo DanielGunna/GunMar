@@ -1,0 +1,10 @@
+User-agent: *
+Disallow:
+Disallow: /jornalismo/g1/
+Disallow: /_ssi/
+Disallow: /teste-*.html$
+Disallow: /beta/
+Disallow: /componentes/
+Disallow: /globo-news/jornal-globo-news/videos/v/globo-news-ao-vivo/61910/
+Disallow: *globo-cdn-src/*
+Sitemap: http://sitemaps.globo.com/g1.xml

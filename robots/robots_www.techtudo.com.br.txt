@@ -1,0 +1,10 @@
+#
+# robots.txt
+#
+
+User-Agent: *
+Disallow: /_/
+Disallow: /noticia-beta/
+Disallow: *globo-cdn-src/*
+Sitemap: http://sitemaps.globo.com/techtudo.xml
+

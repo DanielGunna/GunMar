@@ -4,11 +4,13 @@ package collector;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 
 import java.util.HashMap;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class DnsResolver {
 	
@@ -44,7 +48,7 @@ public class DnsResolver {
 
 	private void indexAddress(InetAddress address, URI hostName) {
 		addressTable.put(hostName.toString(), address);
-		logAddressInfo(address);
+		//logAddressInfo(address);
 		ArrayList <InetAddress> addresses = new ArrayList<>();
 		addresses.add(address);
 		cacheAddress(new CacheMetadata(addresses, hostName, getParsedRootRobots(address)));
@@ -55,20 +59,21 @@ public class DnsResolver {
 	}
 
 	private void cacheAddress(CacheMetadata data) {
+		//TODO save data cached on memory to disk when the memory cache overflow
 		if (totalCachedAddress <= MAX_CACHED_ADDRESS) {
 			cacheOnMemory(data);
 		} else {
 			clearMemoryCache();
 			cacheOnMemory(data);
-			//cacheOnDisk(data);
 		}
 	}
 
 	private void cacheOnDisk(CacheMetadata data) {
-		
+		//TODO implement disk cache strategy
 	}
 
 	private void cacheOnMemory(CacheMetadata data) {
+		// TODO handle disk cache 
 		addressCache.put(data.getUrl().getHost(), data);
 	}
 
@@ -99,8 +104,6 @@ public class DnsResolver {
 		return true;
 	}
 	
-
-
 	private void clearMemoryCache() {
 		addressCache.clear();
 		addressTable.clear();
@@ -110,12 +113,15 @@ public class DnsResolver {
 		List<String> rules = new ArrayList<>();
 		if(isCahedOnMemory(url)){
 			rules   = addressCache.get(url.getHost()).getDisalowedAddresses();			
+		}else{
+			resolveWithDns(url);
+			rules = addressCache.get(url.getHost()).getDisalowedAddresses();
 		}
 		return rules;
 	}
 
 	private boolean isCached(URI hostName) {
-		return false;
+		return isCahedOnMemory(hostName);
 	}
 
 	private String resolveWithCache(URI hostName) {
@@ -124,43 +130,58 @@ public class DnsResolver {
 
 	private String resolveWithDns(URI hostName) {
 		try {
-			DNSNameService service = new DNSNameService();
+	
 			InetAddress ipAddress = Inet4Address.getByName(hostName.getHost().toString());//service.lookupAllHostAddr(hostName.toString());
 			indexAddress(ipAddress, hostName);
 			return ipAddress.getHostAddress();
-		} catch (UnknownHostException e) {
+		} catch (Exception  e) {
 			System.out.println(TAG + "Invalid HostName");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		}  
 		return "";
 	}
 
 	private void logAddressInfo(InetAddress address) {
-//		System.out.println(TAG + "Host IP Address: " + address.getHostAddress());
-//		System.out.println(TAG + "Host Name:  " + address.getHostName());
-		//System.out.println(TAG + "Host Canonicalname:  " + address.getCanonicalHostName());
+        System.out.println(TAG + "Host IP Address: " + address.getHostAddress());
+        System.out.println(TAG + "Host Name:  " + address.getHostName());
+		System.out.println(TAG + "Host Canonicalname:  " + address.getCanonicalHostName());
 	}
 
 	
-	private InputStreamReader getUrlStream(String address) throws Exception{
-		URL url = new URL("http://" + address + "/robots.txt");
-		HttpURLConnection conn =(HttpURLConnection) url.openConnection();
-		conn.setUseCaches(true);
-		conn.setReadTimeout(0);
-		conn.setConnectTimeout(0);
+	private InputStreamReader getUrlStream(String address) {
+		URL url;
+		HttpsURLConnection conn = null ;
+		try {
+			url = new URL("https://" + address + "/robots.txt");
+			conn =(HttpsURLConnection) url.openConnection();
+			conn.setUseCaches(true);
+			conn.setReadTimeout(0);
+			conn.setConnectTimeout(0);
+		} catch (MalformedURLException e) {
+			 System.out.println("Malformed ulr error getting url stream :" + address);
+		} catch (IOException e) {
+			System.out.println("IO error getting url stream :" + address);
+		}
+	
 		return verifyRedirects(conn);
 	}
-	private InputStreamReader verifyRedirects(HttpURLConnection conn) throws Exception {
-		int status = conn.getResponseCode();
+	private InputStreamReader verifyRedirects(HttpsURLConnection conn)   {
 		InputStreamReader in =  null;
-		if (status != HttpURLConnection.HTTP_OK) {
-			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM|| status == HttpURLConnection.HTTP_SEE_OTHER){
-				getUrlStream(conn.getHeaderField("Location"));
-			}	 
-		}else{
-			in = new InputStreamReader(conn.getInputStream());
+		try{
+			int status = conn.getResponseCode();
+			if (status != HttpsURLConnection.HTTP_OK) {
+				if (status == HttpsURLConnection.HTTP_MOVED_TEMP || status == HttpsURLConnection.HTTP_MOVED_PERM|| status == HttpURLConnection.HTTP_SEE_OTHER){
+					getUrlStream(conn.getHeaderField("Location"));
+				}	 
+			}else{
+				in = new InputStreamReader(conn.getInputStream());
+			}
+		}catch (UnknownHostException e) {
+			// TODO: handle  https connection
+			System.out.println("Error handling redirects, possibly associated with https url + " + e.getCause().getMessage() );
+		} catch (Exception e) {
+			System.out.println("IO error handling redirects ");
 		}
+		
 		return in;
 	}
 
@@ -180,6 +201,7 @@ public class DnsResolver {
 			outputStream.close();
 		} catch (Exception e) {
 			//e.printStackTrace();
+			System.out.println("IO error geting robots.txt :" + address);
 		}
 		return lines;
 	}
@@ -197,11 +219,10 @@ public class DnsResolver {
 				rule = line.split(":");
 				if(rule.length>1){
 					if(!disallowed.contains(rule[1].trim()))
-					disallowed.add(rule[1].trim());
+						disallowed.add(rule[1].trim());
 				}
 			}
 		}
-		//System.out.println(disallowed.toString());
 		return disallowed;
 	}
 	

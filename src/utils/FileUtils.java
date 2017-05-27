@@ -2,6 +2,7 @@ package utils;
 
 import java.util.Arrays;
 import java.util.Formatter;
+import java.util.FormatterClosedException;
 import java.util.Scanner;
 import java.io.File;
 
@@ -118,8 +119,20 @@ public class FileUtils
    }
    
    public static void println(String[] x) {
-	      if(write == true){
-			   saida.format( "%s\n", Arrays.toString(x));
+	      if(write == true && saida != null){
+	    	  if(x != null){
+	    		  String output = Arrays.toString(x);
+	    		  if(output !=null){
+	    			  try{
+		    			  saida.format( "%s\n", output);
+	    			  }catch(FormatterClosedException e){
+	    				  System.out.println("IO Error: "+ e.getLocalizedMessage());
+	    			  }catch (Exception e) {
+	    				  System.out.println("Unknown IO Error: "+ e.getLocalizedMessage());
+					}
+	    		}
+	    	  }else
+	    		 System.out.println("Array nulo, just keep going!");
 	      }
    }
 

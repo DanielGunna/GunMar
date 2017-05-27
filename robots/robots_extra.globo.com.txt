@@ -1,0 +1,17 @@
+User-agent: *
+Disallow: /_inc
+
+User-agent: Googlebot-News
+Allow: *
+
+User-agent: Yandex
+Disallow: /
+
+User-agent: Slurp
+Disallow: /
+
+User-agent: Baidoospider
+Disallow: /
+
+
+Sitemap:  http://extra.globo.com/sitemap/index.xml
