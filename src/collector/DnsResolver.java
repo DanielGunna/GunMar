@@ -96,9 +96,20 @@ public class DnsResolver {
 	
 	
 	public boolean canDownloadData(URI url){
+		if(url == null)
+			return false;
 		for(String path : getRobotRulesByUrl(url)){
-			if(url.toString().contains(path)){
-				return false;
+			if(url.toString().contains(path.trim())){
+				String[] paths  = url.toString().trim().split("/");
+				for(String p : paths){
+					if(p.equals("")|| p.equals(" "))
+						continue;
+					if(p.trim().equals(path.trim())){
+						System.out.println("The url "+ url+ " violate the rule "+ path + "  dir : ---" + p+"---");
+						return false;
+					}
+						
+				}
 			}
 		}
 		return true;

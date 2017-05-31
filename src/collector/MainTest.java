@@ -28,11 +28,15 @@ public class MainTest {
 		initUrlListWithSeed();
 		ExecutorService executor = Executors.newFixedThreadPool(MAX_NUM_THREADS);
 		while(true) {
-			if (urlList.isEmpty())
+			if (urlList.isEmpty()){
+				//System.out.println("Url list is empty!");
 				continue;
+			}
 			
-			if (urlList.size() > 2000)
+			if (urlList.size() > 2000){
+				//System.out.println("Url list overflow!");
 				continue;
+			}
 			
 			URL url = (URL) urlList.remove(0);
 			Fetcher worker = new Fetcher(url.toString());
@@ -52,13 +56,13 @@ public class MainTest {
 	}
 	
 	private static void initUrlListWithSeed() {
-		urlList.add(new URL("http://pt.wikipedia.org/wiki/Categoria:Pessoas_vivas"));
-		urlList.add(new URL("http://pt.wikipedia.org/wiki/Categoria:Instituições"));
-		urlList.add(new URL("http://globo.com"));
-		urlList.add(new URL("http://www.nytimes.com/"));
-		urlList.add(new URL("http://www.dicionariodenomesproprios.com.br/"));
-		urlList.add(new URL("http://www.yahoo.com"));
-		urlList.add(new URL("http://dmoztools.net/"));
+		//urlList.add(new URL("http://pt.wikipedia.org/wiki/Categoria:Pessoas_vivas"));
+		//urlList.add(new URL("http://pt.wikipedia.org/wiki/Categoria:Instituições"));
+		//urlList.add(new URL("http://globo.com"));
+		//urlList.add(new URL("http://www.nytimes.com/"));
+		//urlList.add(new URL("http://www.dicionariodenomesproprios.com.br/"));
+	    urlList.add(new URL("http://www.yahoo.com"));
+		//urlList.add(new URL("http://dmoztools.net/"));
 
 	}
 	

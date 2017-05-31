@@ -43,7 +43,8 @@ public class FileUtils
 
 	public static void close() {
       if(write == true){
-         saida.close();
+    	  if(saida!=null)
+    		  saida.close();
          write = false;
       }
       if(read == true){

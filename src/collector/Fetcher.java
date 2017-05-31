@@ -3,7 +3,7 @@ package collector;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
+
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,7 +30,7 @@ public class Fetcher implements Runnable {
 
 	public Document fetchDocument() throws Exception {
 		startTime = System.currentTimeMillis();
-		if(DnsResolver.getInstance().canDownloadData(new URL(url).toURI())){
+		if(DnsResolver.getInstance().canDownloadData(getUrl())){
 			DnsResolver.getInstance().resolveAddress(URI.create(url));
 			return RequestHandler.getInstance().getDataFromUrl(url);
 		}else{
@@ -39,6 +39,12 @@ public class Fetcher implements Runnable {
 	
 	    return null;
     }
+
+private URI getUrl() {
+	if(url.equals("")|| url.equals(" ")|| url.equals("http://"))
+		return null;
+	return new URL(url).toURI();
+}
 
 private void sendDocumentToParser(Document doc) {
 	if(doc == null)

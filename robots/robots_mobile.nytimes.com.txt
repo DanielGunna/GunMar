@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /svc
-Disallow: /*.amp.html$
-
-User-agent: googlebot
-Allow: /*.amp.html$
-
-Sitemap: http://spiderbites.nytimes.com/sitemaps/mobile.nytimes.com/sitemap.xml.gz

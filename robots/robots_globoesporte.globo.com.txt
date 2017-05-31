@@ -1,8 +1,0 @@
-Sitemap: http://globoesporte.globo.com/sitemap.xml
-User-agent: *
-Disallow: /publieditorial
-Disallow: /eu-atleta/zcalendario/calendario.html
-Disallow: /servico
-Disallow: /dynamo
-Disallow: /beta
-Disallow: *globo-cdn-src/*

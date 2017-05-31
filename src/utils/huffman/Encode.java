@@ -25,7 +25,7 @@ public class Encode {
 	/**
 	 * The runner function to perform the encoding
 	 */
-	private void performEncode() {
+	public  void performEncode() {
 		System.out.println("==== Encoding File Begin ====");
 		// 1. Create the character mapping by reading in from source file
 		Map<Character, Integer> map = Huffman.createMapFromFile(this.sourceFilePath);

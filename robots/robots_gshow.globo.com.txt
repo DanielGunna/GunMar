@@ -1,8 +1,0 @@
-#
-# robots.txt
-#
-User-agent: *
-Disallow: /beta
-Disallow: /delivery
-Disallow: *globo-cdn-src/*
-Sitemap: http://sitemaps.globo.com/gshow.xml

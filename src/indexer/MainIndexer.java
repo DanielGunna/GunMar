@@ -7,6 +7,7 @@ import java.util.List;
 
 import main.Machine;
 import main.Machine.DocumentData;
+import utils.huffman.Encode;
 
 public class MainIndexer {
 	
@@ -65,8 +66,12 @@ public class MainIndexer {
 						files.add(parsedfile);
 						IndexEntry newEntry = new IndexEntry(occur.get(token), files);
 						globalTokens.put(token,newEntry);
+						System.out.println("Ocurrency :"+newEntry.toString());
 					}
 				}
+				
+				Encode encode = new Encode(parsedfile.getPath(), new File("compressed/"+parsedfile.getName()).getPath());
+				encode.performEncode();
 			}
 		}
 	}

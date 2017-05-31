@@ -1,3 +1,0 @@
-User-agent: *
-Disallow: /wp-admin/
-Sitemap: http://spiderbites.nytimes.com/sitemaps/lens.blogs.nytimes.com/sitemap.xml.gz
