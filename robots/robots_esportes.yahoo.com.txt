@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /_x_/
+Disallow: /_xhr/
+Disallow: /darla/
+Disallow: /dynamic/
+Disallow: /pageview/
+Sitemap: https://esportes.yahoo.com/sitemaps/sports-sitemap_index_BR_pt-BR.xml.gz

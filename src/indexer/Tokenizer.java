@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class Tokenizer {
 	public List<String> getTokens(File file){
 		occurrence = new HashMap<>();
 		FileReader reader;
-		Set<String> tokens = null;
+		Set<String> tokens = new HashSet<>();
 		try {
 			reader = new FileReader(file);
 			BufferedReader buff = new BufferedReader(reader);

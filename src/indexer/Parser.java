@@ -8,16 +8,16 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 
+import utils.FileUtils;
 import utils.StopWords;
 
 public class Parser {
 	
 	
-	public File parseDocument(File file){
+	public String parseDocument(File file){
 		FileReader reader;
-		FileWriter writer;
+		File  parsed = FileUtils.openWrite("parsed/"+file.getName());
 		try {
-			writer = new FileWriter(file);
 			reader = new FileReader(file);
 			BufferedReader buff = new BufferedReader(reader);
 			String line = "";
@@ -25,56 +25,54 @@ public class Parser {
 			while((line = buff.readLine())!=null){
 				fileString+=line;
 			}
-			writer.write(getParsedFile(fileString));
-			writer.close();
 			reader.close();
-			
+			FileUtils.print(getParsedFile(fileString));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return file;
+		FileUtils.close();
+		return parsed.getPath();
 	}
 
 	private String getParsedFile(String fileString) {
-		removeStopWords(fileString);
-		fileString.replace("á","a");
-		fileString.replace("à","a");
-		fileString.replace("ê","e");
-		fileString.replace("â","a");
-		fileString.replace("-","");
-		fileString.replace("!","");
-		fileString.replace(".","");
-		fileString.replace("ç","c");
-		fileString.replace("?","");
-		fileString.replace("ã","a");
-		fileString.replace("õ","o");
-		fileString.replace("é","e");
-		fileString.replace("í","i");
-		fileString.replace("ó","o");
-		fileString.replace("ú","u");
-		fileString.replace("ü","u");
-		fileString.replace("(","");
-		fileString.replace(")","");
-		fileString.replace("{","");
-		fileString.replace("}","");
-		return fileString;
+		fileString = fileString.replace("á","a");
+		fileString = fileString.replace("à","a");
+		fileString = fileString.replace("ê","e");
+		fileString = fileString.replace("â","a");
+		fileString = fileString.replace("-","");
+		fileString = fileString.replace("!","");
+		fileString = fileString.replace(".","");
+		fileString = fileString.replace("ç","c");
+		fileString = fileString.replace("?","");
+		fileString = fileString.replace("ã","a");
+		fileString = fileString.replace("õ","o");
+		fileString = fileString.replace("é","e");
+		fileString = fileString.replace("í","i");
+		fileString = fileString.replace("ó","o");
+		fileString = fileString.replace("ú","u");
+		fileString = fileString.replace("ü","u");
+		fileString = fileString.replace("(","");
+		fileString = fileString.replace(")","");
+		fileString = fileString.replace("{","");
+		fileString = fileString.replace("}","");
+		return fileString = removeStopWords(fileString);
 	}
 	
 	
 	private String removeStopWords(String fileString) {
 		
 		for (String stopWord : StopWords.enStopWords) {
-			fileString.replace(fileString, stopWord);
+			fileString = fileString.replace(stopWord,"");
 		}
 		
 
 		for (String stopWord : StopWords.esStopWords) {
-			fileString.replace(fileString, stopWord);
+			fileString = fileString.replace(stopWord,"");
 		}
 		
 
 		for (String stopWord : StopWords.ptStopWords) {
-			fileString.replace(fileString, stopWord);
+			fileString = fileString.replace(stopWord,"");
 		}
 		
 		return fileString;

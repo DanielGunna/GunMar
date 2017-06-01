@@ -1,12 +1,19 @@
 package indexer;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.channels.ShutdownChannelGroupException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
 import main.Machine;
 import main.Machine.DocumentData;
+import utils.FileUtils;
+import utils.huffman.Decode;
 import utils.huffman.Encode;
 
 public class MainIndexer {
@@ -47,13 +54,17 @@ public class MainIndexer {
 		}
 	}
 	
+
+	
 	public static void mainIndexer(){
 		globalTokens = new HashMap<>();
 		while(true){
 			if(Machine.data.size() >= 100 && Machine.data.size() <=1000 ){
 				Parser parser = new Parser();
 				DocumentData data = Machine.getInstace().data.remove(0);
-				File  parsedfile  = parser.parseDocument(data.getDocumentFile());
+				//showFile(data.getDocumentFile());
+				File  parsedfile  =  new File(parser.parseDocument(data.getDocumentFile()));
+				//FileUtils.showFile(parsedfile);
 				Tokenizer tokenizer = new Tokenizer();
 				List<String> documentTokens = tokenizer.getTokens(parsedfile);
 				HashMap<String, Integer> occur = tokenizer.getOcurrency();
@@ -66,12 +77,13 @@ public class MainIndexer {
 						files.add(parsedfile);
 						IndexEntry newEntry = new IndexEntry(occur.get(token), files);
 						globalTokens.put(token,newEntry);
-						System.out.println("Ocurrency :"+newEntry.toString());
+						//System.out.println("Token: " + token + " " +globalTokens.get(token).toString());
 					}
 				}
-				
-				Encode encode = new Encode(parsedfile.getPath(), new File("compressed/"+parsedfile.getName()).getPath());
+				Encode encode = new Encode(parsedfile.getPath(), "compressed/"+parsedfile.getName().replace("txt", "")+"huf");
 				encode.performEncode();
+				//Decode decode = new Decode( "compressed/"+parsedfile.getName().replace("txt", "")+"huf","decompressed/"+parsedfile.getName()+".txt");
+				//decode.performDecode();
 			}
 		}
 	}

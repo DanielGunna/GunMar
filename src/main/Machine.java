@@ -1,8 +1,12 @@
 package main;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import collector.MainTest;
 import indexer.Analyzer;
@@ -23,6 +27,7 @@ public  class Machine {
 	public class DocumentData{
 		private String documentUrl;
 		private File documentFile;
+		
 		public String getDocumentUrl() {
 			return documentUrl;
 		}
@@ -58,8 +63,15 @@ public  class Machine {
 	}
 	
 	
+	private void showFile(File words) {
+		try (Stream<String> stream = Files.lines(Paths.get(words.getPath()))) {
+	        stream.forEach(System.out::println);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public  void addFile(File links,File words, String url){
-		//DocumentData doc = new DocumentData(file, url);
 		data.add(new DocumentData(links, words, url));
 	}
 	

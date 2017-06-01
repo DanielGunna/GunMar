@@ -4,7 +4,11 @@ import java.util.Arrays;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
 import java.util.Scanner;
+import java.util.stream.Stream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class FileUtils
 {
@@ -16,6 +20,14 @@ public class FileUtils
    public static File getCanonicalPath(String nomeArq) throws Exception{
          return (new File(nomeArq));
    }
+   
+	public static void showFile(File words) {
+		try (Stream<String> stream = Files.lines(Paths.get(words.getPath()))) {
+	        stream.forEach(System.out::println);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static File openWrite(String nomeArq) {
       close();

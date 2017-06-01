@@ -20,7 +20,7 @@ public class Decode {
 	/**
 	 * The runner function to perform the decoding
 	 */
-	private void performDecode() {
+	public void performDecode() {
 		System.out.println("==== Decoding File Begin ====");
 		Huffman.writeDecodedFile(this.sourceFilePath, this.targetFilePath);
 		System.out.println("==== Wrote Decoded File to " + this.targetFilePath + " ====");

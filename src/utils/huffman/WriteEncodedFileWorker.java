@@ -43,12 +43,16 @@ public class WriteEncodedFileWorker extends WriteFileWorker {
 	 * @param headerString the header string
 	 */
 	protected void writeBeginningOfFile(String headerString) {
-		for (int i = 0; i < headerString.length(); i += 2) {
-			int intRep = Integer.parseInt(headerString.substring(i, i + 2), 16);
-			String bin = Integer.toBinaryString(intRep);
-			String paddedBin = Huffman.rightPadString(bin, NUM_OF_BITS_TO_WRITE);
-			byteBuffer += paddedBin;
-			this.writeToFile();
+		try {
+			for (int i = 0; i < headerString.length(); i += 2) {
+				int intRep = Integer.parseInt(headerString.substring(i, i + 2), 16);
+				String bin = Integer.toBinaryString(intRep);
+				String paddedBin = Huffman.rightPadString(bin, NUM_OF_BITS_TO_WRITE);
+				byteBuffer += paddedBin;
+				this.writeToFile();
+			}
+		}catch (StringIndexOutOfBoundsException e) {
+			System.out.println("Index out of bounds ");
 		}
 	}
 

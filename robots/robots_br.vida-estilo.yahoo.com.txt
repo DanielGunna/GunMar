@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: 
+Sitemap: https://br.vida-estilo.yahoo.com/sitemaps/style-sitemap_index_BR_pt-BR.xml.gz
