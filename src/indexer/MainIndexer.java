@@ -6,8 +6,10 @@ import java.nio.channels.ShutdownChannelGroupException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import main.Machine;
@@ -21,9 +23,13 @@ public class MainIndexer {
 	private static HashMap<String, IndexEntry> globalTokens;
 	
 	
-	public static class IndexEntry{
+	public static class IndexEntry implements Comparable<IndexEntry> {
 		private Integer ocurrency;
 		private List<File> files;
+
+		public Integer getOcurrency() {
+			return ocurrency;
+		}
 		
 		
 		@Override
@@ -52,9 +58,22 @@ public class MainIndexer {
 			this.files= files;
 			ocurrency = x ;
 		}
+
+		@Override
+		public int compareTo(IndexEntry o) {
+			// TODO Auto-generated method stub
+			return (o.getOcurrency() > this.ocurrency) ? -1 : (o.getOcurrency() == ocurrency) ? 0 : 1;
+		}
 	}
 	
-
+	private  static void showIndex() {
+		System.out.println("-----------------Current Index-----------------");
+		for(Map.Entry<String,IndexEntry> i : globalTokens.entrySet()) {
+			System.out.println("|Token: "+i.getKey()+"| nº ocurrency : "+i.getValue().ocurrency+"| ocurrencies: "+i.getValue().getFileNameList()+"|");	
+		}
+		System.out.println("Nº of tokens"+globalTokens.size());
+		System.out.println("-----------------End of Current Index-----------------");
+	}
 	
 	public static void mainIndexer(){
 		globalTokens = new HashMap<>();
@@ -80,11 +99,18 @@ public class MainIndexer {
 						//System.out.println("Token: " + token + " " +globalTokens.get(token).toString());
 					}
 				}
-				Encode encode = new Encode(parsedfile.getPath(), "compressed/"+parsedfile.getName().replace("txt", "")+"huf");
-				encode.performEncode();
-				//Decode decode = new Decode( "compressed/"+parsedfile.getName().replace("txt", "")+"huf","decompressed/"+parsedfile.getName()+".txt");
-				//decode.performDecode();
+				
+				//File compressed  = new File("compressed/"+parsedfile.getName().replace("txt", "")+"huf");
+				//Encode encode = new Encode(parsedfile.getPath(),compressed.getPath() );
+				//encode.performEncode();
+			}else {
+				if(globalTokens.size() > 0)
+					showIndex();
 			}
 		}
+	}
+	
+	public static void main(String[] args) {
+		MainIndexer.mainIndexer();
 	}
 }

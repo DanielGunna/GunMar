@@ -127,6 +127,7 @@ public class WriteDecodedFileWorker extends WriteFileWorker {
 					currentLength++;
 				}
 			} catch (IndexOutOfBoundsException e) {
+				//this.currentState = State.FINISHED;
 				break;
 			}
 		}
@@ -140,12 +141,16 @@ public class WriteDecodedFileWorker extends WriteFileWorker {
 	@Override
 	public void doWork(int currentByte) {
 		if (this.currentState == State.FINISHED) {
+			//System.out.println("Decoding finished");
 			return;
 		} else if (this.currentState == State.FIRST_BYTE) {
+			//System.out.println("Reading first byte");
 			this.handleReadFirstByte(currentByte);
 		} else if (this.currentState == State.DICTIONARY) {
+			//System.out.println("Reading dictionary");
 			this.handleReadDictionary(currentByte);
 		} else if (this.currentState == State.ENCODED_FILE) {
+			//System.out.println("Encoded file");
 			this.handleDecodeByByte(currentByte);
 		}
 	}

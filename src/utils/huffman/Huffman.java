@@ -265,6 +265,7 @@ public class Huffman {
 	 *                so that it can call the overridden doWork() method
 	 */
 	private static void readFromBinaryFileAndDoWork(String filePath, IFileReaderWorker handler) {
+		System.out.print("Reading from  binary file ...");
 		try (DataInputStream ds = new DataInputStream(new BufferedInputStream(new FileInputStream(filePath)))) {
 			int currentByte;
 			while((currentByte = ds.read()) != -1) {

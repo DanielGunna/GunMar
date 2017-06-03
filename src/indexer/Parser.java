@@ -61,19 +61,19 @@ public class Parser {
 	
 	private String removeStopWords(String fileString) {
 		
-		for (String stopWord : StopWords.enStopWords) {
-			fileString = fileString.replace(stopWord,"");
-		}
+		//for (String stopWord : StopWords.enStopWords) {
+		//	fileString = fileString.replace(stopWord,"");
+		//}
 		
 
-		for (String stopWord : StopWords.esStopWords) {
-			fileString = fileString.replace(stopWord,"");
-		}
+		//for (String stopWord : StopWords.esStopWords) {
+		//	fileString = fileString.replace(stopWord,"");
+		//}
 		
 
-		for (String stopWord : StopWords.ptStopWords) {
-			fileString = fileString.replace(stopWord,"");
-		}
+		//for (String stopWord : StopWords.ptStopWords) {
+		//	fileString = fileString.replace(stopWord,"");
+		//}
 		
 		return fileString;
 	

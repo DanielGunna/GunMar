@@ -1,3 +1,0 @@
-User-agent: *
-Disallow: /olympics/ 
-Sitemap: https://br.noticias.yahoo.com/sitemaps/news-sitemap_index_BR_pt-BR.xml.gz

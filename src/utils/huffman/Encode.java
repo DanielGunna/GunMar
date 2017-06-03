@@ -52,7 +52,7 @@ public class Encode {
 			encode = new Encode(args[0], args[1]);
 		} else {
 			// Sample data for ease of use when running while developing
-			encode = new Encode("samples/input/sample2.txt", "samples/output/sample2.huf");
+			encode = new Encode("/home/aluno/GunMar/docs/http:advertise.bingads.microsoft.compt-br#.txt", "encoded.huf");
 		}
 
 		encode.performEncode();
