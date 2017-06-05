@@ -25,9 +25,7 @@ import utils.huffman.Encode;
 
 public class MainIndexer {
 	
-	private static HashMap<String, IndexEntry> globalTokens;
-	
-	
+	public  static HashMap<String, IndexEntry> globalTokens;
 	public static class IndexEntry implements Comparable<IndexEntry> {
 		@Expose
 		@SerializedName("index_ocurrency")
@@ -38,6 +36,22 @@ public class MainIndexer {
 
 		public Integer getOcurrency() {
 			return ocurrency;
+		}
+		
+		public ArrayList<DocumentEntry>  getFilesEntries(){
+			ArrayList<DocumentEntry> list = new ArrayList<>();
+			for (Map.Entry<String, DocumentEntry> e : files.entrySet()) {
+				list.add(e.getValue());
+			}
+			return list;
+		}
+		
+		public ArrayList<String> getFilesList(){
+			ArrayList<String> list = new ArrayList<>();
+			for(Map.Entry<String, DocumentEntry> e : files.entrySet()){
+				list.add(e.getValue().documentFile.getName());
+			}
+			return list;
 		}
 		
 		public static class DocumentEntry{
@@ -51,11 +65,13 @@ public class MainIndexer {
 			
 			@Override
 			public String toString() {
-				// TODO Auto-generated method stub
+		
 				return "{url:"+fileUrl
 						+",frequency:"+fileOcurrencies
 						+",document:"+documentFile.getName()+"}";
 			}
+			
+			
 			
 			
 			public DocumentEntry(String url, File file, Integer x) {
@@ -84,7 +100,6 @@ public class MainIndexer {
 			}
 			
 		}
-		
 		
 		@Override
 		public String toString() {
@@ -115,7 +130,6 @@ public class MainIndexer {
 
 		@Override
 		public int compareTo(IndexEntry o) {
-			// TODO Auto-generated method stub
 			return (o.getOcurrency() > this.ocurrency) ? -1 : (o.getOcurrency() == ocurrency) ? 0 : 1;
 		}
 	}
@@ -156,7 +170,6 @@ public class MainIndexer {
 						//System.out.println("Token: " + token + " " +globalTokens.get(token).toString());
 					}
 				}
-				
 				File compressed  = new File("compressed/"+parsedfile.getName().replace("txt", "")+"huf");
 				Encode encode = new Encode(parsedfile.getPath(),compressed.getPath() );
 				encode.performEncode();
@@ -188,6 +201,7 @@ public class MainIndexer {
 		Gson gson = new Gson();
 		SerializedIndex index = new SerializedIndex();
 		index.setIndex(globalTokens);
+		System.out.println(gson.toJson(index));
 		FileUtils.openWrite("index.txt");
 		FileUtils.print(gson.toJson(index));
 		FileUtils.close();	

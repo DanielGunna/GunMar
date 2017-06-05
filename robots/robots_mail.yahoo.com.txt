@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.2//EN" "http://www.openmobilealliance.org/tech/DTD/xhtml-mobile12.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" id="bp-doc">
+<head>
+	<title>Yahoo - login</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="referrer" content="origin-when-cross-origin" />	<style type="text/css">
+	body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6 {
+		padding: 0;
+		margin: 0;
+	}
+	h1, h2, h3, h4, h5, h6 {
+		display: inline;
+		font-weight: normal;
+	}
+	img {
+		border: 0;
+	}
+	a,  a:visited,  a:hover,  a:active {
+		color: inherit;
+		text-decoration: none;
+	}
+	ul,  li {
+		list-style-type: none;
+	}
+	body {
+		font-size: medium;
+		-webkit-text-size-adjust: none;
+		font-family: Helvetica,  'Nokia Sans',  Arial,  Sans-serif;
+	}
+
+	.text-align-right {
+		text-align: right;
+	}
+	.text-align-left {
+		text-align: left;
+	}
+
+	.text-align-center {
+		text-align: center;
+	}
+
+	.title-bar {
+		position: relative;
+		height: 20px;
+		margin: 5px 8px;
+		margin-bottom: 10px;
+	}
+
+	.title-bar li {
+		position: absolute;
+		top: 0;
+		width: 100%;
+	}
+
+	.title-bar .logo {
+		display: inline-block;
+		margin-top: 4px;
+	}
+
+	.heading-flickr {
+		background: url(https://s.yimg.com/wm/assets/mbrlogin/images/flickr.png) 0 0 no-repeat;
+		padding-left: 50px;
+		margin: 5px 8px;
+	}
+
+	.login-mobile-links {
+		margin-top: 20px;
+		border-top: 1px solid  #dcdddd;
+		font-size: 87.5%;
+	}
+
+	.login-mobile-links li {
+		border-bottom: 1px solid  #dcdddd;
+		padding: 5px 8px;
+	}
+
+	.login-signup-notice {
+		padding: 5px 8px;
+	}
+
+	.login-signup-notice .description {
+		color: #90989e;
+	}
+
+	.error-message {
+		padding: 5px 8px;
+		color: #b30200;
+	}
+
+	.footer-links,
+	.footer-logo,
+	.footer-copyright {
+		text-align: center;
+		margin: 10px auto;
+	}
+
+	.footer-links li {
+		display: inline-block;
+		font-weight: bold;
+	}
+
+	.footer-links li span {
+		font-weight normal;
+	}
+
+	.footer-copyright {
+		color: #8d8d8d;
+	}
+
+	input[type="text"],  input[type="password"],  textarea {
+		font-size: 85%;
+		border-top: 1px solid #c6c6c6;
+		border-bottom: 1px solid #808080;
+		border-left: 1px solid #a6a6a6;
+		border-right: 1px solid #a6a6a6;
+	}
+	.formField input[type="text"],  .formField input[type="password"],  .formField textarea {
+		width: 89%
+	}
+	.formField input[type="submit"],  .formField button {
+		font-size: 80%;
+		font-weight: bold;
+		border-top: 1px solid #c6c6c6;
+		border-bottom: 1px solid #808080;
+		border-left: 1px solid #a6a6a6;
+		border-right: 1px solid #a6a6a6;
+		background: #6e329d;
+		color: #ffffff;
+		padding: 4px 8px;
+		border-style: none;
+	}
+	form {
+		margin: 0;
+	}
+	form.inline,  form.inline .formField,  .formField.inline {
+		display: inline;
+	}
+	.formField input,  .formField textarea,  .formField select,  .formField button {
+		font-size: 80%;
+		font-weight: inherit;
+		margin: 0 8px 0.3em;
+	}
+	.formField textarea {
+		margin-top: .3em;
+		width: 89%}
+	.formField input.disabled,  .formField textarea.disabled {
+		color: #bcc5cc;
+	}
+
+	#toolbar .formField input.disabled,  #toolbar .formField textarea.disabled {
+		color: #bcc5cc;
+	}
+	.formLabel {
+		display: block;
+		padding: 0.3em 8px;
+		color: #4d4d4d;
+	}
+	input.text {
+		display: block;
+	}
+	input.text.abc {
+		-wap-input-format: '*m'}
+	input.text.phone {
+		-wap-input-format: '*n'}
+	input.text.number {
+		-wap-input-format: '*N'}
+	input.submit {
+		font-weight: bold;
+	}
+	.formField-submit {
+		display: inline-block;
+	}
+	a.inline {
+		color: #324fe1;
+	}
+	#pageFooter {
+		clear: both;
+		padding: 0.8em 0 1em 0;
+		font-size: 80%;
+		border-top: 1px solid #dfdfdf;
+		background-color: #f2f2f2;
+	}
+
+	.rtl {
+		direction: rtl;
+	}
+	.rtl .text-align-right {
+		text-align: left;
+	}
+	.rtl .text-align-left {
+		text-align: right;
+	}
+</style>
+</head>
+
+<body id="bp-bd" class="">
+	<div id="page">
+		<div id="pageHeader">
+			<ul class="title-bar">
+								<li class="text-align-left"><a href="https://m.yahoo.com/w/global?.intl=us&amp;.lang=en-US"><img src="https://s.yimg.com/wm/assets/mbrlogin/images/header_all_sites.png" alt="All sites" /></a></li>
+								<li class="text-align-center"><a href="https://m.yahoo.com/w/ygo-frontpageus&amp;.lang=en-US"><img class="logo" src="https://s.yimg.com/wm/assets/mbrlogin/images/yahoo_logo_white.png"/ alt="Yahoo" align="bottom" /></a></li>
+				<li class="text-align-right"><a href="https://m.yahoo.com/w/ygo-frontpageus&amp;.lang=en-US"><img src="https://s.yimg.com/wm/assets/mbrlogin/images/header_home.png" alt="Yahoo" /></a></li>
+			</ul>
+					</div>
+		<div id="content">
+			<form action="/m?.intl=us&amp;.done=https%3A%2F%2Flogin.yahoo.com%3A443%2Fconfig%2Fmail%3F.intl%3Dus%26.done%3Dhttps%253A%252F%252Fmg.mail.yahoo.com%252Fneo%252Fm%252Flaunch" method="post" id="LoginModel">
+
+    <input type="hidden" name="_ts" value="1496689347"/>
+    <input type="hidden" name="_tpa" value=""/>
+    <input type="hidden" name="_muh" value=""/>
+    <input type="hidden" name="_crumb" value=""/>
+    <input type="hidden" name="_uuid" value="rSSX9Hja5Bwz"/>
+    <input type="hidden" name="_seqid" value="1"/>
+    <div class="formField">
+        <label for="input-10" class="formLabel"><span>Yahoo ID</span></label>
+        <input type="text" class="text" id="input-10" name="username" value=""/>
+    </div>
+    <div class="formField">
+        <span class="formLabel">Password</span>
+        <input type="password" class="text" name="passwd"/>
+    </div>
+    <div class="formField formField-submit">
+        <input type="submit" class="submit" name="__submit" value="Sign in"/>
+    </div>
+</form>
+
+			<ul class="login-mobile-links">
+				<li><a class="inline" href="https://login.yahoo.com/m?.intl=us&amp;.done=https%3A%2F%2Flogin.yahoo.com%3A443%2Fconfig%2Fmail%3F.intl%3Dus%26.done%3Dhttps%253A%252F%252Fmg.mail.yahoo.com%252Fneo%252Fm%252Flaunch&amp;mbsw=m">Click here if you are using a smartphone</a></li>
+				<li><a class="inline" href="https://login.yahoo.com/m?.intl=us&amp;.done=https%3A%2F%2Flogin.yahoo.com%3A443%2Fconfig%2Fmail%3F.intl%3Dus%26.done%3Dhttps%253A%252F%252Fmg.mail.yahoo.com%252Fneo%252Fm%252Flaunch&amp;mbsw=m">Click here if you are an On-Demand Password user</a></li>
+			</ul>
+			<div class="login-signup-notice">
+				<div>Don't have a Yahoo ID?</div>
+				<div class="description">Visit www.yahoo.com with your computer and sign up for free.</div>
+			</div>
+		</div>
+		
+		<div id="pageFooter">
+			<ul class="footer-links">
+				<li><a class="inline" href="https://m.yahoo.com/w/web/privacy?wid=login&amp;.intl=us&amp;.lang=en-US">Privacy</a><span> | </span></li>
+				<li><a class="inline" href="https://m.yahoo.com/w/web/legal/LegalLinks.bp?wid=login&amp;.intl=us&amp;.lang=en-US">Legal</a><span> | </span></li>
+				<li><a class="inline" href="https://m.yahoo.com/w/customercare?ref=login&amp;.intl=us&amp;.lang=en-US">Help</a></li>
+			</ul>
+			<div class="footer-logo">
+				<img src="https://s.yimg.com/wm/assets/mbrlogin/images/yahoo_logo_footer.png" alt=""/>
+			</div>
+			<div class="footer-copyright">© 2017 Yahoo. All rights reserved</div>
+		</div>
+	</div>
+		<!-- SpaceID: 954000104 -->
+	<!-- l28.member.bf1.yahoo.com -->
+</body>
+</html>
