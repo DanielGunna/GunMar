@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import indexer.MainIndexer.IndexEntry.DocumentEntry;
 import main.Machine;
 import main.Machine.DocumentData;
 import utils.FileUtils;
@@ -24,11 +29,60 @@ public class MainIndexer {
 	
 	
 	public static class IndexEntry implements Comparable<IndexEntry> {
+		@Expose
+		@SerializedName("index_ocurrency")
 		private Integer ocurrency;
-		private List<File> files;
+		@Expose
+		@SerializedName("index_files")
+		private HashMap<String,DocumentEntry> files;
 
 		public Integer getOcurrency() {
 			return ocurrency;
+		}
+		
+		public static class DocumentEntry{
+			@Expose
+			@SerializedName("file_url")
+			private String fileUrl;
+			private File documentFile;
+			@Expose
+			@SerializedName("file_ocurrency")
+			private Integer fileOcurrencies;
+			
+			@Override
+			public String toString() {
+				// TODO Auto-generated method stub
+				return "{url:"+fileUrl
+						+",frequency:"+fileOcurrencies
+						+",document:"+documentFile.getName()+"}";
+			}
+			
+			
+			public DocumentEntry(String url, File file, Integer x) {
+				fileUrl = url;
+				documentFile = file;
+				fileOcurrencies = x ;
+			// TODO Auto-generated constructor stub
+			}
+			public String getFileUrl() {
+				return fileUrl;
+			}
+			public void setFileUrl(String fileUrl) {
+				this.fileUrl = fileUrl;
+			}
+			public Integer getFileOcurrencies() {
+				return fileOcurrencies;
+			}
+			public void setFileOcurrencies(Integer fileOcurrencies) {
+				this.fileOcurrencies = fileOcurrencies;
+			}
+			public File getDocumentFile() {
+				return documentFile;
+			}
+			public void setDocumentFile(File documentFile) {
+				this.documentFile = documentFile;
+			}
+			
 		}
 		
 		
@@ -36,25 +90,25 @@ public class MainIndexer {
 		public String toString() {
 			return "{occurency:"+ocurrency
 					+ ","
-					+ "files:}"+ getFileNameList();
+					+ "files:"+ getFileNameList()+"}";
 		}
 		
 		private String getFileNameList() {
 			ArrayList<String> filesName = new ArrayList<>();
-			for(File file : files){
-				filesName.add(file.getName());
+			for(Map.Entry<String, DocumentEntry> file : files.entrySet()){
+				filesName.add(file.getValue().toString());
 			}	
 			return filesName.toString();
 		}
 
-		public List<File> getFiles(){
+		public HashMap<String,DocumentEntry> getFiles(){
 			return files;
 		}
 		
 		public void incrementCont(Integer c){
 			ocurrency+=c;
 		}
-		public IndexEntry(Integer x , List<File> files){
+		public IndexEntry(Integer x , HashMap<String,DocumentEntry> files){
 			this.files= files;
 			ocurrency = x ;
 		}
@@ -78,7 +132,7 @@ public class MainIndexer {
 	public static void mainIndexer(){
 		globalTokens = new HashMap<>();
 		while(true){
-			if(Machine.data.size() >= 100 && Machine.data.size() <=1000 ){
+			if(Machine.getInstace().data.size() >= 2){
 				Parser parser = new Parser();
 				DocumentData data = Machine.getInstace().data.remove(0);
 				//showFile(data.getDocumentFile());
@@ -89,28 +143,57 @@ public class MainIndexer {
 				HashMap<String, Integer> occur = tokenizer.getOcurrency();
 				for(String token :  documentTokens){
 					if(globalTokens.containsKey(token)){
-						globalTokens.get(token).getFiles().add(parsedfile);
+						IndexEntry entry  = globalTokens.get(token);
+						DocumentEntry document = new DocumentEntry(data.getDocumentUrl(),parsedfile,occur.get(token));
+						entry.getFiles().put(parsedfile.getName(),document);
 						globalTokens.get(token).incrementCont(occur.get(token));
 					}else{
-						ArrayList<File> files = new ArrayList<>();
-						files.add(parsedfile);
+						HashMap<String,DocumentEntry> files = new HashMap<>();
+						DocumentEntry document = new DocumentEntry(data.getDocumentUrl(),parsedfile,occur.get(token));
+						files.put(parsedfile.getName(),document);
 						IndexEntry newEntry = new IndexEntry(occur.get(token), files);
 						globalTokens.put(token,newEntry);
 						//System.out.println("Token: " + token + " " +globalTokens.get(token).toString());
 					}
 				}
 				
-				//File compressed  = new File("compressed/"+parsedfile.getName().replace("txt", "")+"huf");
-				//Encode encode = new Encode(parsedfile.getPath(),compressed.getPath() );
-				//encode.performEncode();
+				File compressed  = new File("compressed/"+parsedfile.getName().replace("txt", "")+"huf");
+				Encode encode = new Encode(parsedfile.getPath(),compressed.getPath() );
+				encode.performEncode();
+				//showIndex();
 			}else {
-				if(globalTokens.size() > 0)
-					showIndex();
+				if(globalTokens.size() > 0){
+					saveIndex();
+				}
 			}
 		}
 	}
 	
-	public static void main(String[] args) {
-		MainIndexer.mainIndexer();
+	private static class SerializedIndex{
+		@Expose
+		@SerializedName("index")
+		private HashMap<String, IndexEntry> index;
+
+		public HashMap<String, IndexEntry> getIndex() {
+			return index;
+		}
+
+		public void setIndex(HashMap<String, IndexEntry> index) {
+			this.index = index;
+		}
+		
 	}
+
+	private static void saveIndex() {
+		Gson gson = new Gson();
+		SerializedIndex index = new SerializedIndex();
+		index.setIndex(globalTokens);
+		FileUtils.openWrite("index.txt");
+		FileUtils.print(gson.toJson(index));
+		FileUtils.close();	
+	}
+	
+	//public static void main(String[] args) {
+		//ainIndexer.mainIndexer();
+	//}
 }
