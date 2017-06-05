@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
 
 import utils.FileUtils;
 import utils.StopWords;
@@ -26,6 +28,7 @@ public class Parser {
 				fileString+=line;
 			}
 			reader.close();
+			String[] lineTokens  =  fileString.split(",");
 			FileUtils.print(getParsedFile(fileString));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,28 +58,50 @@ public class Parser {
 		fileString = fileString.replace(")","");
 		fileString = fileString.replace("{","");
 		fileString = fileString.replace("}","");
-		return fileString = removeStopWords(fileString);
+		return fileString = removeStopWords(fileString.split(","));
 	}
 	
 	
-	private String removeStopWords(String fileString) {
-		
-		//for (String stopWord : StopWords.enStopWords) {
-		//	fileString = fileString.replace(stopWord,"");
-		//}
-		
+	private String removeStopWords(String[] fileString) {
 
-		//for (String stopWord : StopWords.esStopWords) {
-		//	fileString = fileString.replace(stopWord,"");
-		//}
-		
+		List<String> words = new ArrayList<String>();
+		for (String word : fileString) {
 
-		//for (String stopWord : StopWords.ptStopWords) {
-		//	fileString = fileString.replace(stopWord,"");
-		//}
-		
-		return fileString;
+			if (isStopWord(word) == false) {
+				words.add(word);
+			}
+
+		}
+		return String.join(",", words);
 	
 	}
+
+
+		private boolean isStopWord(String word) {
+
+			for (String stopWord : StopWords.enStopWords) {
+				if (word.equals(stopWord)) {
+					return true;
+				}
+				
+			}
+			
+
+			for (String stopWord : StopWords.esStopWords) {
+				if (word.equals(stopWord)) {
+					return true;
+				}
+			}
+			
+
+			for (String stopWord : StopWords.ptStopWords) {
+				if (word.equals(stopWord)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+		
 
 }
