@@ -1,3 +1,0 @@
-
-user-agent: *
-Sitemap: https://advertise.bingads.microsoft.com/sitemapIndex.xml

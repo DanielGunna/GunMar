@@ -1,7 +1,12 @@
 package indexer;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.channels.ShutdownChannelGroupException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -62,7 +67,18 @@ public class MainIndexer {
 			@Expose
 			@SerializedName("file_ocurrency")
 			private Integer fileOcurrencies;
+			@Expose
+			@SerializedName("file_length")
+			private Integer fileLength;
 			
+			public Integer getFileLength() {
+				return fileLength;
+			}
+
+			public void setFileLength(Integer fileLength) {
+				this.fileLength = fileLength;
+			}
+
 			@Override
 			public String toString() {
 		
@@ -74,10 +90,11 @@ public class MainIndexer {
 			
 			
 			
-			public DocumentEntry(String url, File file, Integer x) {
+			public DocumentEntry(String url, File file, Integer x, Integer fileLength) {
 				fileUrl = url;
 				documentFile = file;
 				fileOcurrencies = x ;
+				this.fileLength = fileLength; 
 			// TODO Auto-generated constructor stub
 			}
 			public String getFileUrl() {
@@ -158,12 +175,12 @@ public class MainIndexer {
 				for(String token :  documentTokens){
 					if(globalTokens.containsKey(token)){
 						IndexEntry entry  = globalTokens.get(token);
-						DocumentEntry document = new DocumentEntry(data.getDocumentUrl(),parsedfile,occur.get(token));
+						DocumentEntry document = new DocumentEntry(data.getDocumentUrl(),parsedfile,occur.get(token),data.getFileLength());
 						entry.getFiles().put(parsedfile.getName(),document);
 						globalTokens.get(token).incrementCont(occur.get(token));
 					}else{
 						HashMap<String,DocumentEntry> files = new HashMap<>();
-						DocumentEntry document = new DocumentEntry(data.getDocumentUrl(),parsedfile,occur.get(token));
+						DocumentEntry document = new DocumentEntry(data.getDocumentUrl(),parsedfile,occur.get(token),data.getFileLength());
 						files.put(parsedfile.getName(),document);
 						IndexEntry newEntry = new IndexEntry(occur.get(token), files);
 						globalTokens.put(token,newEntry);
@@ -182,6 +199,11 @@ public class MainIndexer {
 		}
 	}
 	
+	
+	private class DiskOperation{
+		
+	}
+	
 	private static class SerializedIndex{
 		@Expose
 		@SerializedName("index")
@@ -194,17 +216,26 @@ public class MainIndexer {
 		public void setIndex(HashMap<String, IndexEntry> index) {
 			this.index = index;
 		}
-		
 	}
 
 	private static void saveIndex() {
 		Gson gson = new Gson();
 		SerializedIndex index = new SerializedIndex();
 		index.setIndex(globalTokens);
-		System.out.println(gson.toJson(index));
-		FileUtils.openWrite("index.txt");
-		FileUtils.print(gson.toJson(index));
-		FileUtils.close();	
+		saveFile(gson.toJson(index),"index.txt");	
+	}
+	
+	private static void saveFile(String data,String name) {
+		  PrintWriter writer;
+		try {
+			writer = new PrintWriter(name, "UTF-8");
+			writer.println(data);
+			writer.close();
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 
 	}
 	
 	//public static void main(String[] args) {

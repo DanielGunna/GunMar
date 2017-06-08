@@ -8,9 +8,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import javax.swing.JOptionPane;
+
 import collector.MainTest;
 import indexer.Analyzer;
 import indexer.MainIndexer;
+import query_processor.QueryProcessor;
+import query_processor.Ranking;
 
 
 public  class Machine {
@@ -27,7 +31,16 @@ public  class Machine {
 	public class DocumentData{
 		private String documentUrl;
 		private File documentFile;
+		private Integer fileLength;
 		
+		public int getFileLength() {
+			return fileLength;
+		}
+
+		public void setFileLength(int fileLength) {
+			this.fileLength = fileLength;
+		}
+
 		public String getDocumentUrl() {
 			return documentUrl;
 		}
@@ -55,10 +68,11 @@ public  class Machine {
 
 		private File urlsFile;
 		
-		public DocumentData(File a,File b, String url){
+		public DocumentData(File a,File b, String url, int length){
 			urlsFile  = a;
 			documentUrl = url;
 			documentFile = b; 
+			fileLength = length;
 		}
 	}
 	
@@ -71,8 +85,8 @@ public  class Machine {
 		}
 	}
 	
-	public  void addFile(File links,File words, String url){
-		data.add(new DocumentData(links, words, url));
+	public  void addFile(File links,File words, String url, int length){
+		data.add(new DocumentData(links, words, url,  length));
 	}
 	
 	public  static  List<DocumentData> data = Collections.synchronizedList(new ArrayList<DocumentData>());
@@ -85,8 +99,16 @@ public  class Machine {
 		Thread indexerThread  = new Thread(()->{
 			MainIndexer.mainIndexer();
 		});
+		Thread queryProcessor = new Thread(()-> {
+			while(true) {
+				QueryProcessor processor = new QueryProcessor();
+				processor.search(JOptionPane.showInputDialog(null,"Digite sua consulta :"));
+			}
+		});
+				
 		collectorthread.start();
 		indexerThread.start();
+		queryProcessor.start();
 	}
 	
 	

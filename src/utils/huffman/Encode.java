@@ -26,19 +26,19 @@ public class Encode {
 	 * The runner function to perform the encoding
 	 */
 	public  void performEncode() {
-		System.out.println("==== Encoding File Begin ====");
+		//System.out.println("==== Encoding File Begin ====");
 		// 1. Create the character mapping by reading in from source file
 		Map<Character, Integer> map = Huffman.createMapFromFile(this.sourceFilePath);
 		// 2. Create the Huffman Tree
 		Node rootNode = Huffman.huffman(map);
 		// 3. Canonize the Huffman Tree
 		ArrayList<HuffmanTuple> encodings = Huffman.canonizeHuffmanTree(rootNode);
-		System.out.println("==== Canonized Tree Encodings ====");
-		System.out.println(encodings);
+		//System.out.println("==== Canonized Tree Encodings ====");
+		//System.out.println(encodings);
 		// 4. Write the file based on the encoding
-		System.out.println("=== Writing Encoded File to " + this.targetFilePath + " ====");
+		//System.out.println("=== Writing Encoded File to " + this.targetFilePath + " ====");
 		Huffman.writeEncodedFile(this.sourceFilePath, this.targetFilePath, encodings);
-		System.out.println("==== Encoding File Finish ====");
+		//System.out.println("==== Encoding File Finish ====");
 	}
 
 	/**

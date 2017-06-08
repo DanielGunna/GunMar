@@ -6,8 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import indexer.MainIndexer;
+import indexer.MainIndexer.IndexEntry;
 import indexer.MainIndexer.IndexEntry.DocumentEntry;
+import main.Machine;
+import main.Machine.DocumentData;
 import query_processor.QueryProcessor.QueryToken;
+import utils.stringsimilarity.Cosine;
 
 public class Ranking {
 	
@@ -24,8 +28,6 @@ public class Ranking {
     	return 1 + Math.log(tf);
     }
     
-    
-    
     private class RankEntry implements Comparable<RankEntry>{
     	public DocumentEntry documentEntry;
     	public double score;
@@ -38,32 +40,49 @@ public class Ranking {
 			this.documentEntry = documentEntry;
 			this.score = score;
 		}
-			
-			
 		
+		@Override
+		public String toString() {
+			return "RankEntry [documentEntry=" + documentEntry + ", score=" + score + "]";
+		}
+		public void incrementScore(double newScore) {
+			score+=newScore;
+		}
 	
     }
 
 	public void performSearch(HashMap<String,QueryToken> query) {
-		ArrayList<ArrayList<DocumentEntry>> documents = new ArrayList<>();
-		
-		
-		for(Map.Entry<String,QueryToken> entry : query.entrySet()){
-			if(MainIndexer.globalTokens.containsKey(entry.getValue().getToken())){
-				documents.add(MainIndexer.globalTokens.get(entry.getValue().getToken()).getFilesEntries());
-			}
-		}
+		HashMap<String,RankEntry> idfs = new HashMap<>();
 		int qtDocument = new File("docs").list().length;
-		
-		ArrayList<RankEntry> idfs = new ArrayList<>();
-		for(ArrayList<DocumentEntry> list : documents){
-			for(DocumentEntry doc : list){
-				double docScore = bm25Score(, qtDocument, docLength, averageDocumentLength, queryFrequency, documentFrequency);
-				idfs.add( new RankEntry(doc,docScore));
+		HashMap<String,IndexEntry> index = MainIndexer.globalTokens;
+		for(Map.Entry<String,QueryToken> entry : query.entrySet()){
+			for(Map.Entry<String, IndexEntry> token : index.entrySet()) {
+				Cosine  comparator = new Cosine();
+				String key = token.getKey();
+				if(comparator.similarity(key, entry.getValue().getToken()) >= 0.8){
+					IndexEntry a = MainIndexer.globalTokens.get(key);
+					for(DocumentEntry doc : a.getFilesEntries()) {
+						double docScore = bm25Score(tfNormalization(doc.getFileOcurrencies()), qtDocument, doc.getFileLength(), getAvgDocumentLength(),entry.getValue().getFrequency(),a.getFilesEntries().size());
+						if(idfs.containsKey(doc.getFileUrl())) {
+							idfs.get(doc.getFileUrl()).incrementScore(docScore);
+						}else {
+							idfs.put(doc.getFileUrl() ,new RankEntry(doc,docScore));
+						}
+					}
+				}
 			}
 		}
-		
-		
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
+				+ "\nRESULT"+idfs.toString() + "index size "+ MainIndexer.globalTokens.size());
+	}
 	
+
+	private double getAvgDocumentLength() {
+		 int sumDocLenth = 0 ; 
+		 for(DocumentData data : Machine.data) {
+			sumDocLenth+=data.getFileLength();
+		 }
+		return sumDocLenth/Machine.data.size();
+			 
 	}
 }

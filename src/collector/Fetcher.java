@@ -56,7 +56,7 @@ private void sendDocumentToParser(Document doc) {
 		return;
 	stopTime = System.currentTimeMillis();
     long elapsedTime = stopTime - startTime;
-    System.out.println("COLETA: "+url+" -> "+elapsedTime);
+    //System.out.println("COLETA: "+url+" -> "+elapsedTime);
     
     for (String s : pd.getLinks()) {
     	MainTest.urlList.add(new collector.URL(s));
@@ -73,7 +73,7 @@ private void sendDocumentToParser(Document doc) {
 	if(text !=null)
 		FileUtils.println(text);
 	FileUtils.close();
-	Machine.getInstace().addFile(fileLinks,fileText,url);
+	Machine.getInstace().addFile(fileLinks,fileText,url,text.length);
 }
 
 @Override

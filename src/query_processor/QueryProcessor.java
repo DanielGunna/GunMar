@@ -16,13 +16,13 @@ public class QueryProcessor {
 		
 		public QueryToken(String token, int f ,  int p){
 			this.setToken(token);
-			frequency = f;
+			setFrequency(f);
 			position = p;
 		}
 		
 	
 		public void incrementFrequence(){
-			frequency++;
+			setFrequency(getFrequency() + 1);
 		}
 
 
@@ -34,9 +34,19 @@ public class QueryProcessor {
 		public void setToken(String token) {
 			this.token = token;
 		}
+
+
+		public int getFrequency() {
+			return frequency;
+		}
+
+
+		public void setFrequency(int frequency) {
+			this.frequency = frequency;
+		}
 	}
 	
-	private QueryProcessor(){
+	public QueryProcessor(){
 		ranking = new Ranking();
 	}
 	
@@ -48,7 +58,7 @@ public class QueryProcessor {
 	
 	
 	private HashMap<String,QueryToken> getQueryTokens(String query){
-		String[]  terms = query.split("");
+		String[]  terms = query.split(" ");
 		HashMap<String,QueryToken> tokens  = new HashMap<>();
 		int x  = 0 ;
 		for (String t : terms){
