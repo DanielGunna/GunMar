@@ -19,6 +19,10 @@ import query_processor.Ranking;
 
 public  class Machine {
 	private  static Machine instance; 
+	private Thread collectorthread;
+	private Thread indexerThread ;
+	private Thread queryProcessor;
+	private Thread commandLine;
 	
 	public Machine(){
 		instance = this;
@@ -93,25 +97,50 @@ public  class Machine {
 	
 	
 	protected void mainMachine(String[] args){
-		Thread collectorthread = new Thread(()->{
+		collectorthread = new Thread(()->{
 			MainTest.mainCollector(args);
 		});
-		Thread indexerThread  = new Thread(()->{
+		 indexerThread  = new Thread(()->{
 			MainIndexer.mainIndexer();
 		});
-		Thread queryProcessor = new Thread(()-> {
+		queryProcessor = new Thread(()-> {
 			while(true) {
 				QueryProcessor processor = new QueryProcessor();
-				processor.search(JOptionPane.showInputDialog(null,"Digite sua consulta :"));
+				String query = JOptionPane.showInputDialog(null,"Digite sua consulta :");
+				if(query!=null && query.length() > 0)
+					processor.search(query);
 			}
 		});
-				
-		collectorthread.start();
+		//collectorthread.start();
 		indexerThread.start();
-		queryProcessor.start();
+		//queryProcessor.start();
 	}
 	
 	
+	private void createDirectories() {
+		verifyDir(new File("docs"));
+		verifyDir(new File("links"));
+		verifyDir(new File("parsed"));
+		verifyDir(new File("compressed"));
+		verifyDir(new File("robots"));
+
+	}
+
+	private void verifyDir(File file) {
+		if (!file.exists()) {
+		    System.out.println("Creating directory: " + file.getName());
+		    boolean result = false;
+		    try{
+		        file.mkdir();
+		        result = true;
+		    } catch(SecurityException se){
+			    System.out.println("Cant creat dir :" + file.getName());
+		    }        
+		    if(result) {    
+		        System.out.println("DIR created");  
+		    }
+		}		
+	}
 	public static void main(String[] args ) throws Exception{
 		//Analyzer a = new Analyzer();
 		//a.createFullInvertedIndex();

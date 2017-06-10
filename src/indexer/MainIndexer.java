@@ -9,12 +9,14 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.channels.ShutdownChannelGroupException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import com.google.gson.Gson;
@@ -27,7 +29,9 @@ import main.Machine.DocumentData;
 import utils.FileUtils;
 import utils.huffman.Decode;
 import utils.huffman.Encode;
-
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 public class MainIndexer {
 	
 	public  static HashMap<String, IndexEntry> globalTokens;
@@ -162,6 +166,9 @@ public class MainIndexer {
 	
 	public static void mainIndexer(){
 		globalTokens = new HashMap<>();
+		loadIndex();
+		if(globalTokens.size() == 0)
+			verifyCorpus();
 		while(true){
 			if(Machine.getInstace().data.size() >= 2){
 				Parser parser = new Parser();
@@ -199,11 +206,43 @@ public class MainIndexer {
 		}
 	}
 	
-	
-	private class DiskOperation{
-		
+	private static void verifyCorpus() {
+		ArrayList<File> documents = getFilesFromPath("docs/");
+		ArrayList<File> links = getFilesFromPath("links/");
+		ArrayList<File> parsed = getFilesFromPath("parsed/");
 	}
-	
+
+	private static  ArrayList<File> getFilesFromPath(String path){
+		ArrayList<File> docs = new  ArrayList<>();
+		try (Stream<Path> paths = Files.walk(Paths.get(path))) {
+		    paths
+		        .filter(Files::isRegularFile)
+		        .forEach((t)->{docs.add(t.toFile());});
+		  
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return docs;
+	}
+	private static void loadIndex() {
+		File indexFile = new File("index.txt");
+		String content = "{}";
+		if(indexFile.exists()){
+			try {
+				content = new String(Files.readAllBytes(Paths.get("index.txt")));
+			} catch (IOException e) {
+				System.out.println("Error recovering the index");	
+				e.printStackTrace();
+			}    
+		}
+		SerializedIndex mIndex =  new Gson().fromJson(content,SerializedIndex.class);
+		if(mIndex !=  null  && mIndex.getIndex()!= null){
+			System.out.println("Index successful  loaded!");
+			globalTokens = mIndex.getIndex();
+		}
+	}
+
 	private static class SerializedIndex{
 		@Expose
 		@SerializedName("index")

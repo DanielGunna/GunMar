@@ -49,12 +49,12 @@ public class MainTest {
 	}
 	
 	private static void initUrlListWithSeed() {
-		//urlList.add(new URL("http://pt.wikipedia.org/wiki/Categoria:Pessoas_vivas"));
-		//urlList.add(new URL("http://pt.wikipedia.org/wiki/Categoria:Instituições"));
+		urlList.add(new URL("http://pt.wikipedia.org/wiki/Categoria:Pessoas_vivas"));
+		urlList.add(new URL("http://pt.wikipedia.org/wiki/Categoria:Instituições"));
 		//urlList.add(new URL("http://globo.com"));
 		//urlList.add(new URL("http://www.nytimes.com/"));
 		//urlList.add(new URL("http://www.dicionariodenomesproprios.com.br/"));
-	    urlList.add(new URL("http://www.yahoo.com"));
+	    //urlList.add(new URL("http://www.yahoo.com"));
 		//urlList.add(new URL("http://dmoztools.net/"));
 
 	}

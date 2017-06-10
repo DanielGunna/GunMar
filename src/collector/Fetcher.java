@@ -8,6 +8,9 @@ import java.net.URI;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import main.Machine;
 import main.Machine.DocumentData;
 import utils.FileUtils;
@@ -44,6 +47,24 @@ private URI getUrl() {
 	if(url.equals("")|| url.equals(" ")|| url.equals("http://"))
 		return null;
 	return new URL(url).toURI();
+}
+
+public class DocumentFile{
+	@Expose
+	@SerializedName("url")
+	private String url;
+	@Expose
+	@SerializedName("words_list")
+	private String[]  words;
+	public String[] getWords() {
+		return words;
+	}
+	public void setWords(String[] words) {
+		this.words = words;
+	}
+	
+	
+	
 }
 
 private void sendDocumentToParser(Document doc) {

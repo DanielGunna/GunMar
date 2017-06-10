@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import indexer.MainIndexer;
 import indexer.MainIndexer.IndexEntry;
 import indexer.MainIndexer.IndexEntry.DocumentEntry;
@@ -29,7 +33,11 @@ public class Ranking {
     }
     
     private class RankEntry implements Comparable<RankEntry>{
+    	@Expose
+    	@SerializedName("document")
     	public DocumentEntry documentEntry;
+    	@Expose
+    	@SerializedName("document_score")
     	public double score;
 		@Override
 		public int compareTo(RankEntry o) {
@@ -43,7 +51,7 @@ public class Ranking {
 		
 		@Override
 		public String toString() {
-			return "RankEntry [documentEntry=" + documentEntry + ", score=" + score + "]";
+			return new Gson().toJson(this);
 		}
 		public void incrementScore(double newScore) {
 			score+=newScore;

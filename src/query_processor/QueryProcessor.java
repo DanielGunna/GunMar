@@ -4,14 +4,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class QueryProcessor {
 	
 	private Ranking ranking;
 	private String   query;
 	
 	public class QueryToken{
+		@Expose
+		@SerializedName("query_token")
 		private String token;
+		@Expose
+		@SerializedName("query_frequency")
 		private int frequency;
+		@Expose
+		@SerializedName("position")
 		private int position;
 		
 		public QueryToken(String token, int f ,  int p){
