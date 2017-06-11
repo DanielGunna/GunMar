@@ -10,6 +10,10 @@ import java.util.stream.Stream;
 
 import javax.swing.JOptionPane;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import collector.MainTest;
 import indexer.Analyzer;
 import indexer.MainIndexer;
@@ -33,10 +37,21 @@ public  class Machine {
 	}
 	
 	public static class DocumentData{
+		@Expose
+		@SerializedName("document_url")
 		private String documentUrl;
 		private File documentFile;
+		@Expose
+		@SerializedName("document_length")
 		private Integer fileLength;
 		
+		
+		
+		@Override
+		public String toString() {
+			return  new Gson().toJson(this);
+		}
+
 		public int getFileLength() {
 			return fileLength;
 		}

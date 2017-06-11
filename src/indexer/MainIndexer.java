@@ -216,27 +216,27 @@ public class MainIndexer {
 	}
 	
 	
-	private static void tryRecreateIndex(ArrayList<DocumentFile> words,
-			ArrayList<DocumentFile> links) {
+	private static void tryRecreateIndex(ArrayList<DocumentFile> words,ArrayList<DocumentFile> links) {
 		if(words.size() > links.size()){
-			comparateList(word, minList, which)
+			Machine.data.addAll(comparateList(words, links , true));
+		}else if(words.size() < links.size()){
+			Machine.data.addAll(comparateList(links,words , false));
 		}else{
-			
+			Machine.data.addAll(comparateList(words, links , true));
 		}
-		
-		
+		System.out.println("Size : "+Machine.data.size()+" "+Machine.data.toString());
 	}
 	
 	
 	private static ArrayList<DocumentData> comparateList(ArrayList<DocumentFile> bigList,ArrayList<DocumentFile> minList, boolean which){
 		ArrayList<DocumentData> tokens = new ArrayList<>();
-		for(DocumentFile file : minList){
-			for(DocumentFile f : bigList){
-				if(f.getUrl().equals(file.getUrl())){
+		for(DocumentFile  min : minList){
+			for(DocumentFile big : bigList){
+				if(min.getUrl().equals(big.getUrl())){
 					if(which)
-						tokens.add(new DocumentData(f.getFile(),file.getFile() , f.getUrl(), file.getWords().length));
+						tokens.add(new DocumentData(min.getFile(),big.getFile() , min.getUrl(), big.getWords().length));
 					else
-						tokens.add(new DocumentData(file.getFile(),f.getFile() , f.getUrl(), f.getWords().length));
+						tokens.add(new DocumentData(big.getFile(),min.getFile() , min.getUrl(), min.getWords().length));
 				}
 			}
 		}
