@@ -32,7 +32,7 @@ public  class Machine {
 		return instance;
 	}
 	
-	public class DocumentData{
+	public static class DocumentData{
 		private String documentUrl;
 		private File documentFile;
 		private Integer fileLength;

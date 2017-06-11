@@ -3,11 +3,12 @@ package collector;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-
+import java.util.Arrays;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -56,15 +57,37 @@ public class DocumentFile{
 	@Expose
 	@SerializedName("words_list")
 	private String[]  words;
+	
+	private File file;
+	
+	
+	public File getFile() {
+		return file;
+	}
+	public void setFile(File file) {
+		this.file = file;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
 	public String[] getWords() {
 		return words;
 	}
 	public void setWords(String[] words) {
 		this.words = words;
 	}
-	
-	
-	
+	public DocumentFile(String url, String[] words) {
+		super();
+		this.url = url;
+		this.words = words;
+	}
+	@Override
+	public String toString() {
+		return new Gson().toJson(this);
+	}
 }
 
 private void sendDocumentToParser(Document doc) {
@@ -85,14 +108,16 @@ private void sendDocumentToParser(Document doc) {
      
 	File fileLinks = FileUtils.openWrite("links/" + url.replace("/", "") + ".txt");
 	String[] links  = pd.getLinks();
+	DocumentFile linksFIle= new DocumentFile(url, links);
 	if(links !=null)
-		FileUtils.println(links);
+		FileUtils.println(linksFIle.toString());
 	FileUtils.close();
 	
 	File fileText = FileUtils.openWrite("docs/" + url.replace("/", "") + ".txt");
 	String[] text  = pd.getWords();
+	DocumentFile docsFIle= new DocumentFile(url, text);
 	if(text !=null)
-		FileUtils.println(text);
+		FileUtils.println(docsFIle.toString());
 	FileUtils.close();
 	Machine.getInstace().addFile(fileLinks,fileText,url,text.length);
 }

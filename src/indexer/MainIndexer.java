@@ -19,10 +19,13 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import org.w3c.dom.views.DocumentView;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import collector.Fetcher.DocumentFile;
 import indexer.MainIndexer.IndexEntry.DocumentEntry;
 import main.Machine;
 import main.Machine.DocumentData;
@@ -207,9 +210,55 @@ public class MainIndexer {
 	}
 	
 	private static void verifyCorpus() {
-		ArrayList<File> documents = getFilesFromPath("docs/");
-		ArrayList<File> links = getFilesFromPath("links/");
+		tryRecreateIndex(getListDocumentFile(getFilesFromPath("docs/")),
+		getListDocumentFile(getFilesFromPath("links/")));
 		ArrayList<File> parsed = getFilesFromPath("parsed/");
+	}
+	
+	
+	private static void tryRecreateIndex(ArrayList<DocumentFile> words,
+			ArrayList<DocumentFile> links) {
+		if(words.size() > links.size()){
+			comparateList(word, minList, which)
+		}else{
+			
+		}
+		
+		
+	}
+	
+	
+	private static ArrayList<DocumentData> comparateList(ArrayList<DocumentFile> bigList,ArrayList<DocumentFile> minList, boolean which){
+		ArrayList<DocumentData> tokens = new ArrayList<>();
+		for(DocumentFile file : minList){
+			for(DocumentFile f : bigList){
+				if(f.getUrl().equals(file.getUrl())){
+					if(which)
+						tokens.add(new DocumentData(f.getFile(),file.getFile() , f.getUrl(), file.getWords().length));
+					else
+						tokens.add(new DocumentData(file.getFile(),f.getFile() , f.getUrl(), f.getWords().length));
+				}
+			}
+		}
+		return tokens;
+	}
+
+	private static ArrayList<DocumentFile> getListDocumentFile(ArrayList<File> document){
+		ArrayList<DocumentFile> list = new ArrayList<>();
+		for(File f  : document){
+			try{
+				String content = new String(Files.readAllBytes(Paths.get(f.getPath())));
+				DocumentFile file =  new Gson().fromJson(content,DocumentFile.class);
+				if(file != null){
+					file.setFile(f);
+					list.add(file);
+				}
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+		}
+		return list;
 	}
 
 	private static  ArrayList<File> getFilesFromPath(String path){
@@ -225,6 +274,8 @@ public class MainIndexer {
 		} 
 		return docs;
 	}
+	
+	
 	private static void loadIndex() {
 		File indexFile = new File("index.txt");
 		String content = "{}";
