@@ -126,9 +126,9 @@ public  class Machine {
 					processor.search(query);
 			}
 		});
-		//collectorthread.start();
+		collectorthread.start();
 		indexerThread.start();
-		//queryProcessor.start();
+		queryProcessor.start();
 	}
 	
 	
@@ -157,14 +157,9 @@ public  class Machine {
 		}		
 	}
 	public static void main(String[] args ) throws Exception{
-		//Analyzer a = new Analyzer();
-		//a.createFullInvertedIndex();
+	 
 		new Machine().mainMachine(args);
-		///try {
-			//indexerThread.wait(10000000);
-		//} catch (InterruptedException e) {
-		//	e.printStackTrace();
-		//}
+ 
 	
 		
 	}

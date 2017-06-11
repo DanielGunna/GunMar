@@ -7,25 +7,41 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.nio.channels.ShutdownChannelGroupException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.nio.file.WatchEvent.Kind;
+import java.nio.file.WatchEvent.Modifier;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.w3c.dom.views.DocumentView;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import collector.Fetcher;
 import collector.Fetcher.DocumentFile;
+import collector.MainTest;
+import collector.URL;
 import indexer.MainIndexer.IndexEntry.DocumentEntry;
 import main.Machine;
 import main.Machine.DocumentData;
@@ -38,6 +54,8 @@ import java.nio.file.Paths;
 public class MainIndexer {
 	
 	public  static HashMap<String, IndexEntry> globalTokens;
+	private static final int  SIZE  = 1;
+	
 	public static class IndexEntry implements Comparable<IndexEntry> {
 		@Expose
 		@SerializedName("index_ocurrency")
@@ -170,10 +188,14 @@ public class MainIndexer {
 	public static void mainIndexer(){
 		globalTokens = new HashMap<>();
 		loadIndex();
-		if(globalTokens.size() == 0)
-			verifyCorpus();
+		if(globalTokens.size() == 0){
+			Thread index = new Thread(()->{verifyCorpus();});
+			index.start();
+		}
+		int add = 0;
 		while(true){
-			if(Machine.getInstace().data.size() >= 2){
+			if(Machine.getInstace().data.size() > 0){
+				//if(globalTokens.size() >= 10  || (add - globalTokens.size())>= 10){
 				Parser parser = new Parser();
 				DocumentData data = Machine.getInstace().data.remove(0);
 				//showFile(data.getDocumentFile());
@@ -196,33 +218,79 @@ public class MainIndexer {
 						globalTokens.put(token,newEntry);
 						//System.out.println("Token: " + token + " " +globalTokens.get(token).toString());
 					}
+					
 				}
-				File compressed  = new File("compressed/"+parsedfile.getName().replace("txt", "")+"huf");
-				Encode encode = new Encode(parsedfile.getPath(),compressed.getPath() );
-				encode.performEncode();
+				//File compressed  = new File("compressed/"+parsedfile.getName().replace("txt", "")+"huf");
+				//Encode encode = new Encode(parsedfile.getPath(),compressed.getPath() );
+				//encode.performEncode();
+				//}else 
+				if(add != globalTokens.size()&&globalTokens.size() > 0 && (globalTokens.size() - add)>= SIZE){
+					add = globalTokens.size();
+					//System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Saving index...");
+					saveIndex();
+				} 
+				if(Machine.data.size() ==  0 )add = globalTokens.size();
 				//showIndex();
 			}else {
-				if(globalTokens.size() > 0){
-					saveIndex();
-				}
+				
 			}
 		}
 	}
 	
 	private static void verifyCorpus() {
-		tryRecreateIndex(getListDocumentFile(getFilesFromPath("docs/")),
-		getListDocumentFile(getFilesFromPath("links/")));
 		ArrayList<File> parsed = getFilesFromPath("parsed/");
+		//readWikipediaBase();
+		System.out.println("trying create index...");
+		tryRecreateIndex(getListDocumentFile(getFilesFromPath("docs/")),getListDocumentFile(getFilesFromPath("links/")));
 	}
+	
+	private static void readWikipediaBase(){
+		 ArrayList<File> corpus = new ArrayList<>();
+		 getFiles(corpus,(Paths.get("large/en/")));
+		 long start = System.currentTimeMillis();
+		 indexDocuments(corpus);
+		 long finish = System.currentTimeMillis();
+		 System.out.println("Time :"+(finish-start));
+	}
+
+	private static void  indexDocuments(ArrayList<File> corpus) {
+		ArrayList<Document> documents = new ArrayList<>();
+		for(File f : corpus){
+			try {
+				String file = new String(Files.readAllBytes(Paths.get(f.getPath())));
+				Fetcher fetcher = new Fetcher(Jsoup.parse(file),"http://wikipedia.org/wiki/"+f.getName());
+				MainTest.executor.execute(fetcher);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private static List<File> getFiles(ArrayList<File> fileNames, Path dir) {
+	    try(DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+	        for (Path path : stream) {
+	            if(path.toFile().isDirectory()) {
+	                getFiles(fileNames, path);
+	            } else {
+	                fileNames.add(path.toFile());
+	                System.out.println(path.getFileName());
+	            }
+	        }
+	    } catch(IOException e) {
+	        e.printStackTrace();
+	    }
+	    return fileNames;
+	} 
 	
 	
 	private static void tryRecreateIndex(ArrayList<DocumentFile> words,ArrayList<DocumentFile> links) {
 		if(words.size() > links.size()){
-			Machine.data.addAll(comparateList(words, links , true));
+			comparateList(words, links , true);
 		}else if(words.size() < links.size()){
-			Machine.data.addAll(comparateList(links,words , false));
+			comparateList(links,words , false);
 		}else{
-			Machine.data.addAll(comparateList(words, links , true));
+			comparateList(words, links , true);
 		}
 		System.out.println("Size : "+Machine.data.size()+" "+Machine.data.toString());
 	}
@@ -230,35 +298,65 @@ public class MainIndexer {
 	
 	private static ArrayList<DocumentData> comparateList(ArrayList<DocumentFile> bigList,ArrayList<DocumentFile> minList, boolean which){
 		ArrayList<DocumentData> tokens = new ArrayList<>();
+		System.out.println("recreating index");
 		for(DocumentFile  min : minList){
 			for(DocumentFile big : bigList){
 				if(min.getUrl().equals(big.getUrl())){
 					if(which)
-						tokens.add(new DocumentData(min.getFile(),big.getFile() , min.getUrl(), big.getWords().length));
+						Machine.data.add(new DocumentData(min.getFile(),big.getFile() , min.getUrl(), big.getWords().length));
 					else
-						tokens.add(new DocumentData(big.getFile(),min.getFile() , min.getUrl(), min.getWords().length));
+						Machine.data.add(new DocumentData(big.getFile(),min.getFile() , min.getUrl(), min.getWords().length));
 				}
 			}
 		}
+		System.out.println("successful recreating index");
 		return tokens;
 	}
 
 	private static ArrayList<DocumentFile> getListDocumentFile(ArrayList<File> document){
-		ArrayList<DocumentFile> list = new ArrayList<>();
-		for(File f  : document){
-			try{
-				String content = new String(Files.readAllBytes(Paths.get(f.getPath())));
-				DocumentFile file =  new Gson().fromJson(content,DocumentFile.class);
-				if(file != null){
-					file.setFile(f);
-					list.add(file);
-				}
-			}catch (Exception e) {
-				// TODO: handle exception
-			}
+		ArrayList<DocumentFile>  list = new ArrayList<>();
+		java.util.List<URL> urlList = Collections.synchronizedList(new ArrayList<URL>());
+		
+		Thread t1 = new Thread(()->{
+			for(File f  : document){
+				try{
+					String content = new String(Files.readAllBytes(Paths.get(f.getPath())));
+					DocumentFile file =  new Gson().fromJson(content,DocumentFile.class);
+					if(file != null){
+						file.setFile(f);
+						list.add(file);
+					}
+					System.out.println(f.getName());
 			
-		}
-		return list;
+					
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
+				
+			}
+		});
+		
+		Thread t2 = new Thread(()->{
+			for(File f  : document){
+				try{
+					String content = new String(Files.readAllBytes(Paths.get(f.getPath())));
+					DocumentFile file =  new Gson().fromJson(content,DocumentFile.class);
+					if(file != null){
+						file.setFile(f);
+						list.add(file);
+					}
+					System.out.println(f.getName());
+					
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
+				
+			}
+		});
+
+		
+		
+				return list;
 	}
 
 	private static  ArrayList<File> getFilesFromPath(String path){
@@ -298,7 +396,10 @@ public class MainIndexer {
 		@Expose
 		@SerializedName("index")
 		private HashMap<String, IndexEntry> index;
-
+		@Expose
+		@SerializedName("index_timestamp")
+		private long timestamp;
+		
 		public HashMap<String, IndexEntry> getIndex() {
 			return index;
 		}
@@ -306,12 +407,21 @@ public class MainIndexer {
 		public void setIndex(HashMap<String, IndexEntry> index) {
 			this.index = index;
 		}
+
+		public long getTimestamp() {
+			return timestamp;
+		}
+
+		public void setTimestamp(long timestamp) {
+			this.timestamp = timestamp;
+		}
 	}
 
 	private static void saveIndex() {
 		Gson gson = new Gson();
 		SerializedIndex index = new SerializedIndex();
 		index.setIndex(globalTokens);
+		index.setTimestamp(new Timestamp(new Date().getTime()).getTime());
 		saveFile(gson.toJson(index),"index.txt");	
 	}
 	

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
@@ -64,7 +65,8 @@ public class Ranking {
 		int qtDocument = new File("docs").list().length;
 		HashMap<String,IndexEntry> index = MainIndexer.globalTokens;
 		for(Map.Entry<String,QueryToken> entry : query.entrySet()){
-			for(Map.Entry<String, IndexEntry> token : index.entrySet()) {
+			Set<Map.Entry<String,IndexEntry>> ab = index.entrySet();
+			for(Map.Entry<String, IndexEntry> token : ab) {
 				Cosine  comparator = new Cosine();
 				String key = token.getKey();
 				if(comparator.similarity(key, entry.getValue().getToken()) >= 0.8){
@@ -81,7 +83,7 @@ public class Ranking {
 			}
 		}
 		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "
-				+ "\nRESULT"+idfs.toString() + "index size "+ MainIndexer.globalTokens.size());
+				+ "\nRESULT"+idfs.toString() + "index size "+ MainIndexer.globalTokens.toString());
 	}
 	
 

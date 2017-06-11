@@ -1,7 +1,10 @@
 package collector;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Arrays;
 
@@ -22,16 +25,24 @@ public class Fetcher implements Runnable {
 	private String url;
 	Parser parser;
 	ParsedData pd;
+	private Document document;
+	private boolean isFromCorpus;
+ 
 	
 	private long startTime = 0;
 	private long stopTime = 0;
-
+	public Fetcher(Document doc, String string) {
+		document = doc;
+		url = string;
+		isFromCorpus = true;
+	}
 	public Fetcher(String url) {
+		isFromCorpus = false;
 		startTime = 0;
 		stopTime = 0;
 		this.url = url;
 	}
-
+	
 	public Document fetchDocument() throws Exception {
 		startTime = System.currentTimeMillis();
 		if(DnsResolver.getInstance().canDownloadData(getUrl())){
@@ -106,29 +117,42 @@ private void sendDocumentToParser(Document doc) {
     	MainTest.urlList.add(new collector.URL(s));
     }
      
-	File fileLinks = FileUtils.openWrite("links/" + url.replace("/", "") + ".txt");
+	File fileLinks = new File("links/" + url.replace("/", "") + ".txt");
 	String[] links  = pd.getLinks();
 	DocumentFile linksFIle= new DocumentFile(url, links);
 	if(links !=null)
-		FileUtils.println(linksFIle.toString());
-	FileUtils.close();
+		saveFile(linksFIle.toString(),fileLinks.getPath());
 	
-	File fileText = FileUtils.openWrite("docs/" + url.replace("/", "") + ".txt");
+	File fileText = new File("docs/" + url.replace("/", "") + ".txt");
 	String[] text  = pd.getWords();
 	DocumentFile docsFIle= new DocumentFile(url, text);
 	if(text !=null)
-		FileUtils.println(docsFIle.toString());
-	FileUtils.close();
+		saveFile(docsFIle.toString(),fileText.getPath());
 	Machine.getInstace().addFile(fileLinks,fileText,url,text.length);
+	System.out.println("Success!");
+}
+private static void saveFile(String data,String name) {
+	  PrintWriter writer;
+	try {
+		writer = new PrintWriter(name, "UTF-8");
+		writer.println(data);
+		writer.close();
+	} catch (FileNotFoundException | UnsupportedEncodingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	 
 }
 
 @Override
 public void run() {
 	try {
-
-		sendDocumentToParser(fetchDocument());
+		if(isFromCorpus && document != null)
+			sendDocumentToParser(document);
+		else
+			sendDocumentToParser(fetchDocument());
 	} catch (Exception e) {
-		// TODO Auto-generated catch block
+		System.out.println(url);
 		e.printStackTrace();
 	}
 }

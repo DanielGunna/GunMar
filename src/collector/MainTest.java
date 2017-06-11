@@ -12,14 +12,14 @@ import java.util.concurrent.Executors;
 
 public class MainTest {
 	private static final String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
-	private static final int MAX_NUM_THREADS = 2;
+	private static final int MAX_NUM_THREADS = 8;
 	public static java.util.List<URL> urlList = Collections.synchronizedList(new ArrayList<URL>());
-	
+	public static ExecutorService executor = Executors.newFixedThreadPool(MAX_NUM_THREADS);
 	public static void mainCollector(String[] args) {
 		
 		initUrlListWithSeed();
 		int cont = 0;
-		ExecutorService executor = Executors.newFixedThreadPool(MAX_NUM_THREADS);
+		
 		while(true) {
 			if (urlList.isEmpty()){
 				//System.out.println("Url list is empty!");
@@ -32,8 +32,8 @@ public class MainTest {
 			}
 			
 			URL url = (URL) urlList.remove(0);
-			Fetcher worker = new Fetcher(url.toString());
-			executor.execute(worker);
+			//Fetcher worker = new Fetcher(url.toString());
+			//executor.execute(worker);
 			cont++;
 	        
 		} 
